@@ -1,5 +1,5 @@
 const cancelTx = async () => {
-    const API_URL = "https://eth-goerli.g.alchemy.com/v2/BH41mPci5pB8kKrJXtG9jHfJB1QfPobP";
+    const API_URL = "https://eth-goerli.g.alchemy.com/v2/vlYolnH8xOcJ_nq6M0Edtj_KmkEGZTnw";
     const PRIVATE_KEY = require('./constants').private_key;
     const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
     const web3 = createAlchemyWeb3(API_URL);

@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 var admin = require("firebase-admin");
-var serviceAccount = require("./connexio-3d4de-firebase-adminsdk-85o5h-6b8ee1905d.json");
+var serviceAccount = require("./danke-118ac-firebase-adminsdk-ingm6-187cd4c1cb.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
