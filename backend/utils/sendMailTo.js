@@ -3,10 +3,12 @@ const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 dotenv.config();
 
-module.exports = function(emailTo, token) {
+module.exports = function(emailTo, subject, data) {
 
     const my_emailTo = emailTo;
     const my_token = token;
+    const my_subject = subject;
+    const my_data = data;
 
     const mail = nodemailer.createTransport({
         service: 'gmail',
@@ -17,10 +19,10 @@ module.exports = function(emailTo, token) {
     });
 
     const mailOptions = {
-        from: 'Connexio',
+        from: 'DAnke',
         to: my_emailTo,
-        subject: 'Registration Token - Connexio',
-        html: `<p>One more step to register in Connexio. Go back to the app and input this token: ${my_token}. The token expires in 15 minutes.</p>`
+        subject: my_subject,
+        html: `<p>Hello, take this: ${my_data}.</p>`
     };
 
     mail.sendMail(mailOptions, function(error, info) {

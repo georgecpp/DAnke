@@ -1,9 +1,10 @@
-async function sendTransactionSymphony(_fromAddress, _toAddress, _amount) {
+async function sendTransactionDanke(_fromAddress, _toAddress, _amount) {
     const Tx = require('ethereumjs-tx').Transaction;
     var Web3 = require('web3');
-    const web3 = new Web3('https://eth-goerli.g.alchemy.com/v2/BH41mPci5pB8kKrJXtG9jHfJB1QfPobP');
+    const web3 = new Web3('https://eth-goerli.g.alchemy.com/v2/vlYolnH8xOcJ_nq6M0Edtj_KmkEGZTnw');
     const contractABI = require('./constants').contractABI;
     const private_key = require('./constants').private_key;
+    const contractAddress = require('./constants').contract_address;
 
     let toAddress = _toAddress;
     let fromAddress = _fromAddress;
@@ -15,13 +16,12 @@ async function sendTransactionSymphony(_fromAddress, _toAddress, _amount) {
     // set your private key here, we'll sign the transaction below
     var privateKey = Buffer.from(private_key, 'hex');
 
-    var contractAddress = "0x624da7B4B2358E2e855B4418C72D554b5145Fec6";
     var contract = new web3.eth.Contract(contractABI, contractAddress, {from: fromAddress});
 
     var rawTransaction = {
         "from":fromAddress,
         "gasLimit": 210000,
-        "gasPrice": web3.utils.toHex(web3.utils.toWei('100', 'gwei')),
+        "gasPrice": web3.utils.toHex(web3.utils.toWei('10', 'gwei')),
         "to":contractAddress,
         "value": "0x0",
         "data":contract.methods.transfer(toAddress, amount).encodeABI(),
@@ -36,5 +36,5 @@ async function sendTransactionSymphony(_fromAddress, _toAddress, _amount) {
     contract.methods.balanceOf(fromAddress).call().then(function(balance){console.log(balance)})
 }
 
-// sendTransactionSymphony("0xcdA366B154b91F55Cd187995F2b5D0B7390f03c6", "0x3a6Df46770d13426a015e744A6484F01CF1fE513", 10);
-module.exports = sendTransactionSymphony;
+// sendTransactionDanke("0xcdA366B154b91F55Cd187995F2b5D0B7390f03c6", "0x960718cedFB87b56D86FBDa00a11DEa00bf74be3", 10);
+module.exports = sendTransactionDanke;
