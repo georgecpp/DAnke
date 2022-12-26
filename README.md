@@ -4,4 +4,4 @@ Blockchain-gamification-based mobile app that enhances the lifestyle of people t
 The project served as my undergraduate thesis for the completion of my university studies - Summer 2023 🎓
 
 ## Take a look into the general architecture ⚙️
-![Licenta 2023 (1)](https://user-images.githubusercontent.com/73043384/203765606-0375523f-2efe-4734-bf7c-33cade6f484d.jpg)
+![Licenta 2023 (1)](https://user-images.githubusercontent.com/73043384/209564171-9cc1fc11-6dfd-479e-bce2-36c5048a79ac.jpg)
