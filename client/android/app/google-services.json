@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1069286417092",
+    "project_id": "danke-a8686",
+    "storage_bucket": "danke-a8686.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069286417092:android:37a4106736d8193fce1f91",
+        "android_client_info": {
+          "package_name": "com.danke"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069286417092-fqkfrfmv9ri97r91qke063fbpa2j48q3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danke",
+            "certificate_hash": "1874c55dd1c85fca97ae51da4c4703be4f1c1a02"
+          }
+        },
+        {
+          "client_id": "1069286417092-vtilvanv1eo8jg9ts16pcjl38dc5o9l4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4QE5svjZyODoe0XaiDpw1Op7iKyoFchE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069286417092-vtilvanv1eo8jg9ts16pcjl38dc5o9l4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

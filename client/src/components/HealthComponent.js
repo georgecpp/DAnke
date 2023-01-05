@@ -19,12 +19,28 @@ import {
 
 import GoogleFit, {Scopes} from 'react-native-google-fit';
 
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function convertMsToHoursMinutes(milliseconds) {
+  let seconds = Math.floor(milliseconds / 1000);
+  let minutes = Math.floor(seconds / 60);
+  let hours = Math.floor(minutes / 60);
+
+  seconds = seconds % 60;
+  minutes = minutes % 60;
+  hours = hours % 24;
+
+  return `${padTo2Digits(hours)} h ${padTo2Digits(minutes)} min`;
+}
+
 
 const HealthComponent = () => {
 
   var [dailySteps, setDailySteps] = useState(0);
   var [heartRate, setHeartRate] = useState(0);
-  var [sleep, setSleep] = useState(0);
+  var [sleep, setSleep] = useState(null);
   var [oxygenSaturation, setOxygenSaturation] = useState(0);
   var [bodyTemperature, setBodyTemperature] = useState(0);
 
@@ -36,11 +52,7 @@ const HealthComponent = () => {
       Scopes.FITNESS_ACTIVITY_WRITE,
       Scopes.FITNESS_HEART_RATE_READ,
       Scopes.FITNESS_HEART_RATE_WRITE,
-      Scopes.FITNESS_BODY_TEMPERATURE_READ,
-      Scopes.FITNESS_BODY_TEMPERATURE_WRITE,
       Scopes.FITNESS_SLEEP_READ,
-      Scopes.FITNESS_OXYGEN_SATURATION_READ,
-      Scopes.FITNESS_OXYGEN_SATURATION_WRITE,
     ],
   };
 
@@ -56,7 +68,7 @@ const HealthComponent = () => {
       bucketUnit: 'DAY', // optional - default "DAY". Valid values: "NANOSECOND" | "MICROSECOND" | "MILLISECOND" | "SECOND" | "MINUTE" | "HOUR" | "DAY"
       bucketInterval: 1, // optional - default 1.
     };
-
+    
   // methods to retrieve reference data
   
   let fetchStepsData = async opt => {
@@ -65,8 +77,12 @@ const HealthComponent = () => {
       for (var i = 0; i < res.length; i++) {
         if (res[i].source === 'com.google.android.gms:estimated_steps') {
           let data = res[i].steps.reverse();
-          dailyStepCount = res[i].steps;
-          setDailySteps(data[0].value);
+          if(data.length !== 0) {
+            setDailySteps(data[0].value);
+          }
+          else {
+            setDailySteps(-1);
+          }
         }
       }
     } else {
@@ -90,7 +106,7 @@ const HealthComponent = () => {
     let sleepTotal = 0;
     const res = await GoogleFit.getSleepSamples(opt);
     if(res.length === 0) {
-      setSleep(-1);
+      setSleep('0 h 0 m');
       return;
     }
  
@@ -111,30 +127,8 @@ const HealthComponent = () => {
         }
       }
     }
-    setSleep(Math.round((sleepTotal / (1000 * 60 * 60)) * 100) / 100);
+    setSleep(convertMsToHoursMinutes(sleepTotal));
   };
-
-  let fetchOxygenSaturationData = async opt => {
-    const res = await GoogleFit.getOxygenSaturationSamples(opt);
-    const data = res.reverse();
-    if(data.length === 0) {
-      setOxygenSaturation(-1);
-    }
-    else {
-      setOxygenSaturation(data[0].value);
-    }
-  }
-
-  let fetchBodyTemperatureData = async opt => {
-    const res = await GoogleFit.getBodyTemperatureSamples(opt);
-    const data = res.reverse();
-    if(data.length === 0) {
-      setBodyTemperature(-1);
-    }
-    else {
-      setBodyTemperature(data[0].value);
-    }
-  }
   
   let getAllDataFromAndroid = () => {
   
@@ -145,8 +139,6 @@ const HealthComponent = () => {
         fetchStepsData(opt);
         fetchHeartData(opt);
         fetchSleepData(opt);
-        fetchOxygenSaturationData(opt);
-        fetchBodyTemperatureData(opt);
       } else {
         // Authentication if already not authorized for a particular device
         GoogleFit.authorize(options)
@@ -157,8 +149,6 @@ const HealthComponent = () => {
               fetchStepsData(opt);
               fetchHeartData(opt);
               fetchSleepData(opt);
-              fetchOxygenSaturationData(opt);
-              fetchBodyTemperatureData(opt);
             } else {
               console.log('AUTH_DENIED ' + authResult.message);
             }
@@ -190,7 +180,7 @@ const HealthComponent = () => {
           <Text style={styles.textContainerBlue}>Heart Rate</Text>
         </View>
         <View style={[styles.row_2, styles.containerWhite]}>
-          <Text style={styles.textContainerWhite}>{heartRate}</Text>
+          <Text style={styles.textContainerWhite}>{heartRate} bpm</Text>
         </View>
       </View>
 
@@ -199,25 +189,7 @@ const HealthComponent = () => {
           <Text style={styles.textContainerBlue}>Sleep - Today</Text>
         </View>
         <View style={[styles.row_2, styles.containerWhite]}>
-          <Text style={styles.textContainerWhite}>{sleep} hours</Text>
-        </View>
-      </View>
-
-      <View style={styles.row}>
-        <View style={[styles.row_2, styles.containerBlue]}>
-          <Text style={styles.textContainerBlue}>Oxygen Saturation</Text>
-        </View>
-        <View style={[styles.row_2, styles.containerWhite]}>
-          <Text style={styles.textContainerWhite}>{oxygenSaturation}</Text>
-        </View>
-      </View>
-
-      <View style={styles.row}>
-        <View style={[styles.row_2, styles.containerBlue]}>
-          <Text style={styles.textContainerBlue}>Body Temperature</Text>
-        </View>
-        <View style={[styles.row_2, styles.containerWhite]}>
-          <Text style={styles.textContainerWhite}>{bodyTemperature}</Text>
+          <Text style={styles.textContainerWhite}>{sleep}</Text>
         </View>
       </View>
 
