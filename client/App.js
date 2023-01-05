@@ -1,31 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React from 'react';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-import HealthComponent from './components/HealthComponent';
+import { AuthProvider } from './src/context/AuthContext';
+import AppNav from './src/navigation/AppNav';
 
 const App = () => {
 
   return (
-    <View>
-      <Text>DAnke</Text>
-      <HealthComponent />
-    </View>
+    <AuthProvider>
+      <AppNav />
+    </AuthProvider>
   );
 };
 
