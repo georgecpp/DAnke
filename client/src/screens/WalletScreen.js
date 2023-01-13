@@ -9,6 +9,7 @@ const WalletScreen = () => {
   const authenticateUser = async () => {
     if (connector.connected) {
       console.log('wallet - connected');
+      console.log(connector.session);
     }else{
       const session = await connector.connect();
       // The session object will contain details about the chain you are connected to and also an accounts array
