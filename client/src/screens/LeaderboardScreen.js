@@ -1,11 +1,43 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React, {useState, useContext} from 'react';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 
-const LeaderboardScreen = () => {
+import { AuthContext } from '../context/AuthContext';
+
+
+const LeaderboardScreen = ({navigation}) => {
+
+  const {userInfo} = useContext(AuthContext);
+
   return (
-    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-      <Text>Leaderboard Screen</Text>
-    </View>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <ScrollView style={{padding: 20}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignSelf: 'flex-end',
+            marginBottom: 20,
+          }}>
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <ImageBackground
+              source={{uri:userInfo.data.photo}}
+              style={{width: 35, height: 35}}
+              imageStyle={{borderRadius: 25}}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+          <Text>Leaderboard Screen</Text>
+        </View>
+      </ScrollView>
+  </SafeAreaView>
   )
 }
 
