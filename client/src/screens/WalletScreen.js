@@ -6,10 +6,11 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
+  Image,
+  StyleSheet
 } from 'react-native';
+
 import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
-
-
 import { AuthContext } from '../context/AuthContext';
 
 
@@ -24,8 +25,6 @@ const WalletScreen = ({navigation}) => {
       console.log(connector.session);
     }else{
       const session = await connector.connect();
-      // The session object will contain details about the chain you are connected to and also an accounts array
-      console.log('wallet - not connected');
     }
   }
 
@@ -47,14 +46,44 @@ const WalletScreen = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-          <TouchableOpacity onPress={authenticateUser}>
-            <Text>Connect to Wallet</Text>
-          </TouchableOpacity>
-        </View>
+        {!connector.connected ? 
+          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <TouchableOpacity onPress={authenticateUser}>
+              <Text>Connect to Wallet</Text>
+            </TouchableOpacity>
+          </View>
+        : 
+          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <Text>Connected account: {connector.session.accounts[0].slice(0,10)}</Text>
+            <Text>Wallet provider: {connector.session.peerMeta.name}</Text>
+            <Image
+              style={styles.logo}
+              source={{
+                uri: connector.session.peerMeta.icons[0],
+              }}
+            />
+            <TouchableOpacity onPress={() => {connector.killSession();}}>
+              <Text>Kill session</Text>
+            </TouchableOpacity>
+          </View>
+      }
       </ScrollView>
   </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 50,
+  },
+  tinyLogo: {
+    width: 50,
+    height: 50,
+  },
+  logo: {
+    width: 66,
+    height: 58,
+  },
+});
 
 export default WalletScreen;
