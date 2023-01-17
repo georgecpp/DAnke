@@ -2,10 +2,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, {createContext, useState, useEffect} from "react";
 import { BASE_URL } from "../utils/config";
+import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
+
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
+
+    const connector = useWalletConnect(); // Wallet connect hook
     const [isLoading, setIsLoading] = useState(false);
     const [userToken, setUserToken] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
@@ -52,6 +56,9 @@ export const AuthProvider = ({children}) => {
         AsyncStorage.removeItem('userToken');
         AsyncStorage.removeItem('userInfo');
         setIsLoading(false);
+        if(connector) {
+            connector.killSession();
+        }
     }
 
     const isLoggedIn = async () => {
