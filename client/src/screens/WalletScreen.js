@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,20 +13,39 @@ import {
 import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
 import { AuthContext } from '../context/AuthContext';
 
+import "@ethersproject/shims"
+import { ethers } from "ethers";
+import { contract_address, contractABI } from '../web3/constants';
+
+
+
 
 const WalletScreen = ({navigation}) => {
 
   const {userInfo} = useContext(AuthContext);
   const connector = useWalletConnect(); // Wallet connect hook
+  const [balanceDAC, setBalanceDAC] = useState(0.0);
 
+
+  const fetchBalanceDAC = async (addressFrom) => {
+    const provider = new ethers.providers.AlchemyProvider('goerli', 'vlYolnH8xOcJ_nq6M0Edtj_KmkEGZTnw')
+    const contractDAC = new ethers.Contract(contract_address, contractABI, provider);
+    const balanceBigNumber = await contractDAC.balanceOf(addressFrom);
+    const balance = ethers.utils.formatEther(balanceBigNumber)
+    setBalanceDAC(balance);
+  }
   const authenticateUser = async () => {
     if (connector.connected) {
-      console.log('wallet - connected');
       console.log(connector.session);
     }else{
       const session = await connector.connect();
     }
   }
+
+  useEffect(() => {
+    if(connector && connector.connected) 
+      fetchBalanceDAC(connector.accounts[0]);
+  }, [connector]); // Only re-run the effect if count changes
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -56,6 +75,7 @@ const WalletScreen = ({navigation}) => {
           <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
             <Text>Connected account: {connector.session.accounts[0].slice(0,10)}</Text>
             <Text>Wallet provider: {connector.session.peerMeta.name}</Text>
+            <Text>DAC balance: {balanceDAC}</Text>
             <Image
               style={styles.logo}
               source={{
