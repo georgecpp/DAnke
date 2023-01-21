@@ -49,9 +49,7 @@ const HealthComponent = () => {
   const options = {
     scopes: [
       Scopes.FITNESS_ACTIVITY_READ,
-      Scopes.FITNESS_ACTIVITY_WRITE,
       Scopes.FITNESS_HEART_RATE_READ,
-      Scopes.FITNESS_HEART_RATE_WRITE,
       Scopes.FITNESS_SLEEP_READ,
     ],
   };
@@ -136,6 +134,7 @@ const HealthComponent = () => {
       var authorized = GoogleFit.isAuthorized;
       if (authorized) {
         // if already authorized, fetch data
+        console.log('already AUTH_SUCCESS');
         fetchStepsData(opt);
         fetchHeartData(opt);
         fetchSleepData(opt);

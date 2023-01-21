@@ -1,29 +1,56 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
-  Text,
   SafeAreaView,
-  ScrollView,
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
 
 import { AuthContext } from '../context/AuthContext';
-
+import Leaderboard from 'react-native-leaderboard';
+import axios from "axios";
 
 const LeaderboardScreen = ({navigation}) => {
-
   const {userInfo} = useContext(AuthContext);
 
+  const [leaderboardData, setLeaderboardData] = useState([]);
+
+  const getLeaderboardData = async () => {
+
+    var config = {
+      method: 'get',
+      url: 'https://people.googleapis.com/v1/people/me/connections?personFields=names&sortOrder=FIRST_NAME_ASCENDING',
+      headers: { 
+        'Authorization': `Bearer ${userInfo.data.googleAccessToken}`
+      }
+    };
+
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    const users = [
+      {userName: 'Joe', highScore: 52},
+      {userName: 'Jenny', highScore: 120},
+    ]
+    setLeaderboardData(users);
+  }
+
+  useEffect(() => {
+    getLeaderboardData();
+  }, []);
+
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <ScrollView style={{padding: 20}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff',padding: 20}}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignSelf: 'flex-end',
-            marginBottom: 20,
+            marginBottom: 20
           }}>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <ImageBackground
@@ -33,10 +60,10 @@ const LeaderboardScreen = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-          <Text>Leaderboard Screen</Text>
-        </View>
-      </ScrollView>
+        <Leaderboard 
+        data={leaderboardData} 
+        sortBy='highScore' 
+        labelBy='userName'/>
   </SafeAreaView>
   )
 }

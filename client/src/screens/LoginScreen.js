@@ -27,13 +27,20 @@ const LoginScreen = ({navigation}) => {
     webClientId: '1069286417092-vtilvanv1eo8jg9ts16pcjl38dc5o9l4.apps.googleusercontent.com',
     offlineAccess: true,
     hostedDomain: '',
+    scopes:[
+      'https://www.googleapis.com/auth/contacts.readonly',
+      'https://www.googleapis.com/auth/fitness.activity.read',
+      'https://www.googleapis.com/auth/fitness.heart_rate.read',
+      'https://www.googleapis.com/auth/fitness.sleep.read'
+    ]
   });
   
   const _googleSignIn = async () => {
     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
     const userInfo = await GoogleSignin.signIn();
+    const tokens = await GoogleSignin.getTokens();
     const {name, email, photo} = userInfo.user;
-    login(name, email, photo);
+    login(name, email, photo, tokens.accessToken);
   }
 
   return (
