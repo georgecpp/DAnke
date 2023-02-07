@@ -14,7 +14,7 @@ export const AuthProvider = ({children}) => {
     const [userToken, setUserToken] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
 
-    const login = (name, email, photo) => {
+    const login = (name, email, photo,phoneNumber, googleAccessToken) => {
         setIsLoading(true);
         // axios.post(`${BASE_URL}/auth/social-auth`, {
         //     name: name,
@@ -37,6 +37,8 @@ export const AuthProvider = ({children}) => {
                 name: name,
                 email: email,
                 photo: photo,
+                phoneNumber: phoneNumber,
+                googleAccessToken: googleAccessToken,
                 token: 'asdasdas'
             },
             statusCode: 200

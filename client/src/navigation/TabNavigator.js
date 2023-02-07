@@ -30,22 +30,13 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarStyle: {backgroundColor: '#56a774'},
         tabBarInactiveTintColor: '#fff',
         tabBarActiveTintColor: 'yellow',
       }}>
       <Tab.Screen
-        name="Wallet"
-        component={WalletScreen}
-        options={{
-          tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="ethereum" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Home2"
+        name="Vitals"
         component={HomeStack}
         options={({route}) => ({
           tabBarStyle: {
@@ -56,6 +47,15 @@ const TabNavigator = () => {
             <MaterialCommunityIcons name="heart-multiple" color={color} size={size} />
           ),
         })}
+      />
+      <Tab.Screen
+        name="Wallet"
+        component={WalletScreen}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons name="ethereum" color={color} size={size} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Leaderboard"
