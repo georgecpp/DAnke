@@ -18,6 +18,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import GoogleFit, {Scopes} from 'react-native-google-fit';
+import GoogleFitComponent from './GoogleFitComponent';
 
 function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
@@ -165,7 +166,7 @@ const HealthComponent = () => {
 
   return (
     <View style={[{flex: 1}]}>
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <View style={[styles.row_2, styles.containerBlue]}>
           <Text style={styles.textContainerBlue}>Step Count - Today</Text>
         </View>
@@ -190,7 +191,8 @@ const HealthComponent = () => {
         <View style={[styles.row_2, styles.containerWhite]}>
           <Text style={styles.textContainerWhite}>{sleep}</Text>
         </View>
-      </View>
+      </View> */}
+      <GoogleFitComponent />
 
     </View>
   );
