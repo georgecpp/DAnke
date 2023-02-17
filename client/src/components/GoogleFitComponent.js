@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Text, View, Dimensions, ScrollView } from "react-native";
 import FitChart from "./FitChart";
+import FitImage from "./FitImage";
+import { AuthContext } from "../context/AuthContext";
 
 const { width } = Dimensions.get("screen");
 const sleepData = {
@@ -24,8 +26,16 @@ const stepsData = {
 };
 
 const GoogleFitComponent = () => {
+
+  const {userInfo} = useContext(AuthContext);
   return (
     <ScrollView style={{ backgroundColor: "#1f2026" }}>
+      <View>
+        <FitImage/>
+        <Text style={{fontSize: 20, fontFamily: 'Roboto-Medium', alignSelf: 'center', color: 'white'}}>
+        👋 Yello, {userInfo.data.name}!
+        </Text>
+      </View>
       <View
         style={{
           flex: 1,

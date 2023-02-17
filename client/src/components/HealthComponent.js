@@ -37,14 +37,11 @@ function convertMsToHoursMinutes(milliseconds) {
 }
 
 
-const HealthComponent = () => {
+const HealthComponent = ({navigation}) => {
 
   var [dailySteps, setDailySteps] = useState(0);
   var [heartRate, setHeartRate] = useState(0);
   var [sleep, setSleep] = useState(null);
-  var [oxygenSaturation, setOxygenSaturation] = useState(0);
-  var [bodyTemperature, setBodyTemperature] = useState(0);
-
   var [loading, setLoading] = useState(true);
 
   const options = {
@@ -166,34 +163,7 @@ const HealthComponent = () => {
 
   return (
     <View style={[{flex: 1}]}>
-      {/* <View style={styles.row}>
-        <View style={[styles.row_2, styles.containerBlue]}>
-          <Text style={styles.textContainerBlue}>Step Count - Today</Text>
-        </View>
-        <View style={[styles.row_2, styles.containerWhite]}>
-          <Text style={styles.textContainerWhite}>{dailySteps}</Text>
-        </View>
-      </View>
-
-      <View style={styles.row}>
-        <View style={[styles.row_2, styles.containerBlue]}>
-          <Text style={styles.textContainerBlue}>Heart Rate</Text>
-        </View>
-        <View style={[styles.row_2, styles.containerWhite]}>
-          <Text style={styles.textContainerWhite}>{heartRate} bpm</Text>
-        </View>
-      </View>
-
-      <View style={styles.row}>
-        <View style={[styles.row_2, styles.containerBlue]}>
-          <Text style={styles.textContainerBlue}>Sleep - Today</Text>
-        </View>
-        <View style={[styles.row_2, styles.containerWhite]}>
-          <Text style={styles.textContainerWhite}>{sleep}</Text>
-        </View>
-      </View> */}
-      <GoogleFitComponent />
-
+      <GoogleFitComponent navigation={navigation} />
     </View>
   );
 };
