@@ -3,7 +3,7 @@ import { StyleSheet, View, Dimensions, Animated, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Svg, { Circle, G } from "react-native-svg";
 import { AuthContext } from "../context/AuthContext";
-import { openDrawer } from "../navigation/AppNav";
+import { openDrawer } from "../utils/NavigationService";
 
 const { width, height } = Dimensions.get("screen");
 

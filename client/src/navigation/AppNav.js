@@ -5,16 +5,12 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import { AuthContext } from '../context/AuthContext';
-
-export const navigationRef = React.createRef();
-export function openDrawer(routeName, params) {
-    navigationRef.current.dispatch(DrawerActions.openDrawer());
-}
+import { navigationRef } from '../utils/NavigationService';
 
 const AppNav = () => {
     const {isLoading, userToken} = useContext(AuthContext);
@@ -32,7 +28,5 @@ const AppNav = () => {
         </NavigationContainer>
     );
 }
-
-
 
 export default AppNav;
