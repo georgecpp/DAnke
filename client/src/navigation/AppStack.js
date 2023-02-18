@@ -14,7 +14,7 @@ import LeaderboardScreen from '../screens/LeaderboardScreen';
 
 const Drawer = createDrawerNavigator();
 
-const AuthStack = () => {
+const AppStack = () => {
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawer {...props} />}
@@ -78,4 +78,4 @@ const AuthStack = () => {
   );
 };
 
-export default AuthStack;
+export default AppStack;

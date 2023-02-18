@@ -5,12 +5,12 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import { AuthContext } from '../context/AuthContext';
-
+import { navigationRef } from '../utils/NavigationService';
 
 const AppNav = () => {
     const {isLoading, userToken} = useContext(AuthContext);
@@ -23,7 +23,7 @@ const AppNav = () => {
         );
     }
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
             {userToken !== null ? <AppStack /> : <AuthStack/>}
         </NavigationContainer>
     );

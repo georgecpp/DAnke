@@ -48,7 +48,7 @@ const WalletScreen = ({navigation}) => {
   }, [connector]); // Only re-run the effect if count changes
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#1f2026'}}>
       <ScrollView style={{padding: 20}}>
         <View
           style={{
