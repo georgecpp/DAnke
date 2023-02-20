@@ -7,7 +7,9 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
-  StyleSheet
+  StyleSheet,
+  Animated,
+  Easing,
 } from 'react-native';
 
 import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
@@ -19,7 +21,27 @@ import { contract_address, contractABI } from '../web3/constants';
 import MetamaskSVG from '../assets/images/misc/metamask-fox.svg';
 
 
+const ANIMATION_DURATION = 1000;
+
 const WalletScreen = ({navigation}) => {
+
+  const [animationValue] = useState(new Animated.Value(0));
+
+  const startAnimation = () => {
+    Animated.loop(
+      Animated.timing(animationValue, {
+        toValue: 1,
+        duration: ANIMATION_DURATION,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
+  const stopAnimation = () => {
+    Animated.timing(animationValue).stop();
+    animationValue.setValue(0);
+  };
 
   const {userInfo} = useContext(AuthContext);
   const connector = useWalletConnect(); // Wallet connect hook
@@ -44,6 +66,13 @@ const WalletScreen = ({navigation}) => {
       fetchBalanceDAC(connector.accounts[0]);
   }, [connector]); // Only re-run the effect if count changes
 
+  useEffect(() => {
+    startAnimation();
+    return function cleanup() {
+      stopAnimation();
+    };
+  }, [])
+
   return (
       <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -56,13 +85,35 @@ const WalletScreen = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        {!connector.connected ? 
+        {!connector.connected ? (
           <View style={styles.connectWallet}>
-            <TouchableOpacity onPress={authenticateUser} style={styles.connectButton}>
+            <TouchableOpacity  onPress={() => {
+                stopAnimation();
+                authenticateUser();
+              }} style={styles.connectButton}>
               <Text style={styles.connectButtonText}>Connect to Wallet</Text>
             </TouchableOpacity>
+            <Animated.View
+              style={[
+                styles.loadingContainer,
+                {
+                  opacity: animationValue.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: [0, 1, 0],
+                  }),
+                },
+              ]}
+            >
+              <MetamaskSVG
+                height={300}
+                width={300}
+              />
+              <View style={styles.connectTextContainer}>
+                <Text style={styles.connectText}>Future awaits</Text>
+              </View>
+            </Animated.View>
           </View>
-        : 
+         ) : ( 
           <View style={styles.connectedWallet}>
             <View style={styles.accountInfo}>
               <Text style={styles.accountLabel}>Connected account:</Text>
@@ -74,17 +125,17 @@ const WalletScreen = ({navigation}) => {
             </View>
             <View style={styles.balanceInfo}>
               <Text style={styles.balanceLabel}>DAC balance:</Text>
-              <Text style={styles.balanceValue}>{balanceDAC}</Text>
+              <Text style={styles.balanceValue}>{balanceDAC}⚡</Text>
             </View>
             <MetamaskSVG
-            height={300}
-            width={300}
+            height={200}
+            width={200}
             />
-            <TouchableOpacity onPress={() => {connector.killSession();}} style={styles.disconnectButton}>
+            <TouchableOpacity onPress={() => {connector.killSession(); startAnimation()}} style={styles.disconnectButton}>
               <Text style={styles.disconnectButtonText}>Disconnect Wallet</Text>
             </TouchableOpacity>
           </View>
-        }
+        )}
       </ScrollView>
     </SafeAreaView>
   )
@@ -182,6 +233,34 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingIndicator: {
+    marginBottom: 20,
+  },
+  loadingText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  connectTextContainer: {
+    marginTop: 0,
+    alignItems: 'center',
+  },
+  connectText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textShadowColor: '#000000',
+    textShadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    textShadowRadius: 3,
   },
 });
 
