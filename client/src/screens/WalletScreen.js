@@ -7,7 +7,9 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
-  StyleSheet
+  StyleSheet,
+  Animated,
+  Easing,
 } from 'react-native';
 
 import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
@@ -16,17 +18,34 @@ import { AuthContext } from '../context/AuthContext';
 import "@ethersproject/shims"
 import { ethers } from "ethers";
 import { contract_address, contractABI } from '../web3/constants';
+import MetamaskSVG from '../assets/images/misc/metamask-fox.svg';
 
 
-
+const ANIMATION_DURATION = 1000;
 
 const WalletScreen = ({navigation}) => {
+
+  const [animationValue] = useState(new Animated.Value(0));
+
+  const startAnimation = () => {
+    Animated.loop(
+      Animated.timing(animationValue, {
+        toValue: 1,
+        duration: ANIMATION_DURATION,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
+  const stopAnimation = () => {
+    Animated.timing(animationValue).stop();
+    animationValue.setValue(0);
+  };
 
   const {userInfo} = useContext(AuthContext);
   const connector = useWalletConnect(); // Wallet connect hook
   const [balanceDAC, setBalanceDAC] = useState(0.0);
-
-
   const fetchBalanceDAC = async (addressFrom) => {
     const provider = new ethers.providers.AlchemyProvider('goerli', 'vlYolnH8xOcJ_nq6M0Edtj_KmkEGZTnw')
     const contractDAC = new ethers.Contract(contract_address, contractABI, provider);
@@ -47,62 +66,201 @@ const WalletScreen = ({navigation}) => {
       fetchBalanceDAC(connector.accounts[0]);
   }, [connector]); // Only re-run the effect if count changes
 
+  useEffect(() => {
+    startAnimation();
+    return function cleanup() {
+      stopAnimation();
+    };
+  }, [])
+
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#1f2026'}}>
-      <ScrollView style={{padding: 20}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignSelf: 'flex-end',
-            marginBottom: 20,
-          }}>
+      <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <ImageBackground
-              source={{uri:userInfo.data.photo}}
-              style={{width: 35, height: 35}}
-              imageStyle={{borderRadius: 25}}
+              source={{ uri: userInfo.data.photo }}
+              style={styles.userAvatar}
+              imageStyle={{ borderRadius: 25 }}
             />
           </TouchableOpacity>
         </View>
-        {!connector.connected ? 
-          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-            <TouchableOpacity onPress={authenticateUser}>
-              <Text>Connect to Wallet</Text>
+        {!connector.connected ? (
+          <View style={styles.connectWallet}>
+            <TouchableOpacity  onPress={() => {
+                stopAnimation();
+                authenticateUser();
+              }} style={styles.connectButton}>
+              <Text style={styles.connectButtonText}>Connect to Wallet</Text>
             </TouchableOpacity>
+            <Animated.View
+              style={[
+                styles.loadingContainer,
+                {
+                  opacity: animationValue.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: [0, 1, 0],
+                  }),
+                },
+              ]}
+            >
+              <MetamaskSVG
+                height={300}
+                width={300}
+              />
+              <View style={styles.connectTextContainer}>
+                <Text style={styles.connectText}>Future awaits</Text>
+              </View>
+            </Animated.View>
           </View>
-        : 
-          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-            <Text>Connected account: {connector.session.accounts[0].slice(0,10)}</Text>
-            <Text>Wallet provider: {connector.session.peerMeta.name}</Text>
-            <Text>DAC balance: {balanceDAC}</Text>
-            <Image
-              style={styles.logo}
-              source={{
-                uri: connector.session.peerMeta.icons[0],
-              }}
+         ) : ( 
+          <View style={styles.connectedWallet}>
+            <View style={styles.accountInfo}>
+              <Text style={styles.accountLabel}>Connected account:</Text>
+              <Text style={styles.accountValue}>{connector.session.accounts[0].slice(0,10)}</Text>
+            </View>
+            <View style={styles.walletInfo}>
+              <Text style={styles.walletLabel}>Wallet provider:</Text>
+              <Text style={styles.walletValue}>{connector.session.peerMeta.name}</Text>
+            </View>
+            <View style={styles.balanceInfo}>
+              <Text style={styles.balanceLabel}>DAC balance:</Text>
+              <Text style={styles.balanceValue}>{balanceDAC}⚡</Text>
+            </View>
+            <MetamaskSVG
+            height={200}
+            width={200}
             />
-            <TouchableOpacity onPress={() => {connector.killSession();}}>
-              <Text>Kill session</Text>
+            <TouchableOpacity onPress={() => {connector.killSession(); startAnimation()}} style={styles.disconnectButton}>
+              <Text style={styles.disconnectButtonText}>Disconnect Wallet</Text>
             </TouchableOpacity>
           </View>
-      }
+        )}
       </ScrollView>
-  </SafeAreaView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    flex: 1,
+    backgroundColor: '#1f2026',
   },
-  tinyLogo: {
-    width: 50,
-    height: 50,
+  scrollContainer: {
+    padding: 20,
   },
-  logo: {
-    width: 66,
-    height: 58,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+  },
+  userAvatar: {
+    width: 35,
+    height: 35,
+    borderRadius: 25,
+  },
+  connectWallet: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  connectButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  connectButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  connectedWallet: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  accountInfo: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  accountLabel: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  accountValue: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  walletInfo: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  walletLabel: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  walletValue: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  balanceInfo: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  balanceLabel: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  balanceValue: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  disconnectButton: {
+    backgroundColor: '#FF3B30',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  disconnectButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingIndicator: {
+    marginBottom: 20,
+  },
+  loadingText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  connectTextContainer: {
+    marginTop: 0,
+    alignItems: 'center',
+  },
+  connectText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textShadowColor: '#000000',
+    textShadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    textShadowRadius: 3,
   },
 });
 
