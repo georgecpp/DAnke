@@ -12,6 +12,8 @@ import LoginSVG from '../assets/images/misc/login.svg';
 import GoogleSVG from '../assets/images/misc/google.svg';
 import FacebookSVG from '../assets/images/misc/facebook.svg';
 import TwitterSVG from '../assets/images/misc/twitter.svg';
+import Gaming from '../assets/images/misc/gaming.svg';
+
 
 import SocialMediaButton from '../components/SocialMediaButton';
 import { AuthContext } from '../context/AuthContext';
@@ -73,43 +75,45 @@ const LoginScreen = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+    <SafeAreaView style={{flex: 1, justifyContent: 'center', backgroundColor: '#1f2026'}}>
       <View style={{paddingHorizontal: 25}}>
         <View style={{alignItems: 'center'}}>
-          <LoginSVG
+          <Gaming
             height={300}
             width={300}
             style={{transform: [{rotate: '-5deg'}]}}
           />
         </View>
-        <PhoneInput
-          ref={phoneInput}
-          defaultValue={phoneNumber}
-          defaultCode="RO"
-          layout="first"
-          withShadow
-          autoFocus
-          containerStyle={styleSheet.phoneNumberView}
-          textContainerStyle={{ paddingVertical: 0 }}
-          onChangeFormattedText={text => {
-            setPhoneNumber(text);
-          }}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 30,
-          }}>
-            <SocialMediaButton 
-              buttonTitle="Google"
-              btnType="google"
-              color="black"
-              backgroundColors={["#ffffff", "#ffffff"]}
-              source={require('../assets/images/search.png')}
-              marginLeftIcon={5}
-              onPress={() => {_googleSignIn()}}
+        <View style={{alignItems:'center', flexDirection: 'column'}}>
+          <PhoneInput
+            ref={phoneInput}
+            defaultValue={phoneNumber}
+            defaultCode="RO"
+            layout="first"
+            withShadow
+            autoFocus
+            containerStyle={styleSheet.phoneNumberView}
+            textContainerStyle={{ paddingVertical: 0 }}
+            onChangeFormattedText={text => {
+              setPhoneNumber(text);
+            }}
           />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginBottom: 30,
+            }}>
+              <SocialMediaButton 
+                buttonTitle="Google"
+                btnType="google"
+                color="black"
+                backgroundColors={["#ffffff", "#ffffff"]}
+                source={require('../assets/images/search.png')}
+                marginLeftIcon={5}
+                onPress={() => {_googleSignIn()}}
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>
