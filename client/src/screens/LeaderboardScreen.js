@@ -38,8 +38,13 @@ const LeaderboardScreen = ({navigation}) => {
     return sorted;
   }
 
+  const checkAccessTokenExpiredAndUpdate = (accessToken) => {
+    return accessToken;
+  }
   const getLeaderboardData = async () => {
 
+    const accessToken =  checkAccessTokenExpiredAndUpdate(userInfo.data.googleAccessToken);
+    console.log(userInfo.data);
     var _currentUser = {
       userName: userInfo.data.name,
       userAvatarUrl: userInfo.data.photo,
@@ -47,6 +52,7 @@ const LeaderboardScreen = ({navigation}) => {
     };
     setCurrentUser(_currentUser);
     
+
     var config = {
       method: 'get',
       url: 'https://people.googleapis.com/v1/people/me/connections?pageSize=1000&personFields=names,phoneNumbers,photos&sortOrder=FIRST_NAME_ASCENDING',
