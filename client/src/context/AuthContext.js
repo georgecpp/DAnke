@@ -60,7 +60,7 @@ export const AuthProvider = ({children}) => {
         await AsyncStorage.removeItem('userInfo');
         setIsLoading(false);
         if(connector) {
-            connector.killSession();
+            await connector.killSession();
         }
     }
 

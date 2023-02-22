@@ -7,6 +7,7 @@ import {
   Text,
   useColorScheme,
   View,
+  ActivityIndicator
 } from 'react-native';
 
 import {
@@ -33,15 +34,15 @@ function convertMsToHoursMinutes(milliseconds) {
   minutes = minutes % 60;
   hours = hours % 24;
 
-  return `${padTo2Digits(hours)} h ${padTo2Digits(minutes)} min`;
+  return `${padTo2Digits(hours)} h ${padTo2Digits(minutes)}m`;
 }
 
 
 const HealthComponent = ({navigation}) => {
 
-  var [dailySteps, setDailySteps] = useState(0);
+  var [weeklySteps, setWeeklySteps] = useState([]);
   var [heartRate, setHeartRate] = useState(0);
-  var [sleep, setSleep] = useState(null);
+  var [lastSleep, setLastSleep] = useState(null);
   var [loading, setLoading] = useState(true);
 
   const options = {
@@ -74,7 +75,11 @@ const HealthComponent = ({navigation}) => {
         if (res[i].source === 'com.google.android.gms:estimated_steps') {
           let data = res[i].steps.reverse();
           if(data.length !== 0) {
-            setDailySteps(data[0].value);
+            var stepsInLastWeek = [];
+            data.map((element) => {
+              stepsInLastWeek.push(element.value);
+            })
+            setWeeklySteps(stepsInLastWeek);
           }
           else {
             setDailySteps(-1);
@@ -102,7 +107,7 @@ const HealthComponent = ({navigation}) => {
     let sleepTotal = 0;
     const res = await GoogleFit.getSleepSamples(opt);
     if(res.length === 0) {
-      setSleep('0 h 0 m');
+      setLastSleep('0h 0m');
       return;
     }
  
@@ -123,7 +128,7 @@ const HealthComponent = ({navigation}) => {
         }
       }
     }
-    setSleep(convertMsToHoursMinutes(sleepTotal));
+    setLastSleep(convertMsToHoursMinutes(sleepTotal));
   };
   
   let getAllDataFromAndroid = () => {
@@ -163,8 +168,14 @@ const HealthComponent = ({navigation}) => {
 
   return (
     <View style={[{flex: 1}]}>
-      <GoogleFitComponent navigation={navigation} />
-    </View>
+      {weeklySteps.length !== 0 ?
+      <GoogleFitComponent navigation={navigation} weeklySteps={weeklySteps} heartRate={heartRate} lastSleep={lastSleep}/>
+        : 
+      <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
+        <ActivityIndicator size={'large'} />
+      </View>
+      }
+      </View>
   );
 };
 

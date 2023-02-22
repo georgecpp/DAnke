@@ -6,7 +6,10 @@ import { AuthContext } from "../context/AuthContext";
 import FitHealthStat from "./FitHealthStat";
 
 const { width } = Dimensions.get("screen");
-const sleepData = {
+
+const GoogleFitComponent = ({weeklySteps,heartRate,lastSleep}) => {
+
+  const sleepData = {
   labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   datasets: [
     {
@@ -17,16 +20,14 @@ const sleepData = {
 };
 
 const stepsData = {
-  labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  labels: ["Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"],
   datasets: [
     {
-      data: [10000, 9000, 2000, 3000, 8000, 11000, 10500, 1000],
+      data: [weeklySteps[6], weeklySteps[5], weeklySteps[4], weeklySteps[3], weeklySteps[2], weeklySteps[1], weeklySteps[0]],
       baseline: 10000
     }
   ]
 };
-
-const GoogleFitComponent = () => {
 
   const {userInfo} = useContext(AuthContext);
   return (
@@ -52,30 +53,31 @@ const GoogleFitComponent = () => {
           title="Heart Rate"
           icon="heart-pulse"
           iconColor="#e31b23"
-          value="83 bpm"
+          value={heartRate+" bpm"}
         />
         <FitHealthStat
           title="Steps"
           icon="walk"
           iconColor="#E8BEAC"
-          value="5000"
+          value={weeklySteps[0]}
         />
         <FitHealthStat
           title="Sleep"
           icon="sleep"
           iconColor="#4579ac"
-          value="7h 48m"
+          value={lastSleep}
         />
       </View>
       <View>
         <FitChart
           title={"Sleep"}
-          description={"7h 48m • Yesterday"}
+          description={`${lastSleep} • Yesterday`}
           data={sleepData}
           baseline={8}
         />
         <FitChart
-          title={"Take 10,000 steps a day"}
+          title={"Steps"}
+          description={"Take 10,000 steps a day"}
           data={stepsData}
           baseline={10000}
         />
