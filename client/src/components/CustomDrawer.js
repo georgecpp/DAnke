@@ -38,17 +38,6 @@ const CustomDrawer = props => {
             }}>
             {userInfo.data.name}
           </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                color: '#fff',
-                fontFamily: 'Roboto-Regular',
-                marginRight: 5,
-              }}>
-              280 Coins
-            </Text>
-            <FontAwesome5 name="coins" size={14} color="#fff" />
-          </View>
         </ImageBackground>
         <View style={{flex: 1, backgroundColor: '#fff', paddingTop: 10}}>
           <DrawerItemList {...props} />

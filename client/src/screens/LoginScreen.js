@@ -1,4 +1,4 @@
-import React, {useContext, useState, useRef}  from 'react';
+import React, {useContext, useState, useRef, useEffect}  from 'react';
 import {
   SafeAreaView,
   View,
@@ -25,6 +25,7 @@ import {
 
 import PhoneInput from "react-native-phone-number-input";
 import axios from "axios";
+import { requestUserPermission } from '../utils/NotificationUtils';
 
 const LoginScreen = ({navigation}) => {
   
@@ -73,6 +74,10 @@ const LoginScreen = ({navigation}) => {
       Alert.alert(error);
     });
   }
+
+  useEffect(() => {
+    requestUserPermission();
+  }, []);
 
   return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center', backgroundColor: '#1f2026'}}>

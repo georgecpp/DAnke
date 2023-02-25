@@ -3,6 +3,7 @@ import axios from "axios";
 import React, {createContext, useState, useEffect} from "react";
 import { BASE_URL } from "../utils/config";
 import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
+import messaging from '@react-native-firebase/messaging';
 
 
 export const AuthContext = createContext();
@@ -32,6 +33,12 @@ export const AuthProvider = ({children}) => {
         // .catch(e => {
         //     console.log(`Login error: ${e}`);
         // });
+        const fcmRegistrationToken = await messaging().getToken();
+          if (!fcmRegistrationToken) {
+            Alert.alert(
+              'Firebase token registration error! User will not receive notifications...',
+            );
+        }
         let userInfo = {
             data: {
                 name: name,
@@ -40,6 +47,7 @@ export const AuthProvider = ({children}) => {
                 phoneNumber: phoneNumber,
                 googleAccessToken: googleAccessToken,
                 googleRefreshToken: googleRefreshToken,
+                fcmRegistrationToken: fcmRegistrationToken,
                 token: 'asdasdas'
             },
             statusCode: 200
@@ -49,7 +57,7 @@ export const AuthProvider = ({children}) => {
 
         await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
         await AsyncStorage.setItem('userToken', userInfo.data.token);
-
+        console.log(fcmRegistrationToken);
         setIsLoading(false);
     }
 
