@@ -2,7 +2,7 @@ import React from "react";
 import { View, Dimensions, Text } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 
-const FitChart = ({ data, title, description, baseline }) => {  
+const FitChart = ({ data, title, description, baseline,yAxisSuffix }) => {  
   return (
     <View style={{ flex: 1 }}>
       <View style={{ paddingLeft: 20 }}>
@@ -28,7 +28,7 @@ const FitChart = ({ data, title, description, baseline }) => {
             marginVertical: 8,
             borderRadius: 16,
           }}
-          yAxisSuffix=""
+          yAxisSuffix={yAxisSuffix}
           data={data}
           width={Dimensions.get("window").width}
           height={220}

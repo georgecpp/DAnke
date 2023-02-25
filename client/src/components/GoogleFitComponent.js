@@ -4,26 +4,46 @@ import FitChart from "./FitChart";
 import FitImage from "./FitImage";
 import { AuthContext } from "../context/AuthContext";
 import FitHealthStat from "./FitHealthStat";
+import moment from 'moment';
+import { convertMsToHoursMinutes } from "../utils/DateOps";
 
 const { width } = Dimensions.get("screen");
 
-const GoogleFitComponent = ({weeklySteps,heartRate,lastSleep}) => {
+const GoogleFitComponent = ({weeklySteps,heartRate,weeklySleep}) => {
+
+  // Get the current date
+  const currentDate = moment();
+
+  // Initialize an empty array to store the labels
+  const lastWeekLabels = [];
+
+  // Loop through the last 7 days
+  for (let i = 6; i >= 0; i--) {
+    // Subtract i days from the current date
+    const date = moment(currentDate).subtract(i, 'days');
+
+    // Get the day of the week as a string (e.g. "Monday")
+    const dayOfWeek = date.format('ddd');
+
+    // Add the day of the week to the labels array
+    lastWeekLabels.push(dayOfWeek);
+  }
 
   const sleepData = {
-  labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  labels: lastWeekLabels,
   datasets: [
     {
-      data: [9, 6, 6.5, 8, 6, 7, 9],
+      data: weeklySleep,
       baseline: 8
     }
   ]
 };
 
 const stepsData = {
-  labels: ["Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"],
+  labels: lastWeekLabels,
   datasets: [
     {
-      data: [weeklySteps[6], weeklySteps[5], weeklySteps[4], weeklySteps[3], weeklySteps[2], weeklySteps[1], weeklySteps[0]],
+      data: weeklySteps,
       baseline: 10000
     }
   ]
@@ -59,21 +79,22 @@ const stepsData = {
           title="Steps"
           icon="walk"
           iconColor="#E8BEAC"
-          value={weeklySteps[0]}
+          value={weeklySteps[6]}
         />
         <FitHealthStat
           title="Sleep"
           icon="sleep"
           iconColor="#4579ac"
-          value={lastSleep}
+          value={convertMsToHoursMinutes(weeklySleep[6] * (1000 * 60 * 60))}
         />
       </View>
       <View>
         <FitChart
           title={"Sleep"}
-          description={`${lastSleep} • Yesterday`}
+          description={`${convertMsToHoursMinutes(weeklySleep[6] * (1000 * 60 * 60))} • Yesterday`}
           data={sleepData}
           baseline={8}
+          yAxisSuffix={"h"}
         />
         <FitChart
           title={"Steps"}
