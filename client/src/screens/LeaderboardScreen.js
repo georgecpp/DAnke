@@ -45,17 +45,18 @@ const LeaderboardScreen = ({navigation}) => {
       userAvatarUrl: userInfo.data.photo,
       highScore: 91,
     };
-    setCurrentUser(_currentUser);
-    
-    var config = {
+    setCurrentUser(_currentUser);    
+    const refreshAccessTokenResponse = await axios.post(`https://oauth2.googleapis.com/token?client_id=1069286417092-vtilvanv1eo8jg9ts16pcjl38dc5o9l4.apps.googleusercontent.com&client_secret=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&grant_type=refresh_token&refresh_token=${userInfo.data.googleRefreshToken}`, {});
+    const refreshedAccessToken = refreshAccessTokenResponse.data.access_token;
+    var peopleAPIConfig = {
       method: 'get',
       url: 'https://people.googleapis.com/v1/people/me/connections?pageSize=1000&personFields=names,phoneNumbers,photos&sortOrder=FIRST_NAME_ASCENDING',
       headers: { 
-        'Authorization': `Bearer ${userInfo.data.googleAccessToken}`
+        'Authorization': `Bearer ${refreshedAccessToken}`
       }
     };
 
-    axios(config)
+    axios(peopleAPIConfig)
     .then(function (response) {
       if(response.status === 200) {
         var users = response.data.connections.map(function (connection){
@@ -88,7 +89,7 @@ const LeaderboardScreen = ({navigation}) => {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white', }}>
+    <View style={{ flex: 1, backgroundColor: '#1f2026', }}>
       <LeaderboardHeader currentUser={currentUser} userRank={userRank}/>
       <Leaderboard
       data={leaderboardData}
@@ -96,6 +97,11 @@ const LeaderboardScreen = ({navigation}) => {
       icon='userAvatarUrl' 
       labelBy='userName'
       onRowPress = {(item, index) => {alert(item.userName + " clicked", item.highScore + " points, wow!") }}    
+      oddRowColor="#2C2F33"
+      evenRowColor="#6A5ACD"
+      labelStyle={{color: 'white'}}
+      rankStyle={{color: 'white'}}
+      scoreStyle={{color: 'white'}}
       sort={sort}
       />
     </View>
@@ -105,7 +111,7 @@ const LeaderboardScreen = ({navigation}) => {
 const LeaderboardHeader = ({currentUser, userRank}) => {
   return (
     <View
-      style={{ backgroundColor: '#56a774', padding: 15, paddingTop: 35, alignItems: 'center' }}>
+      style={{ backgroundColor: '#2C2F33', padding: 15, paddingTop: 35, alignItems: 'center' }}>
       <Text style={{ fontSize: 25, color: 'white', }}>Leaderboard</Text>
       <View style={{
           flexDirection: 'row', justifyContent: 'center', alignItems: 'center',

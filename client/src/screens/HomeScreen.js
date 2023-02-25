@@ -16,7 +16,7 @@ export default function HomeScreen({navigation}) {
   const {userInfo} = useContext(AuthContext);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#1f2026'}}>
       <HealthComponent />
     </SafeAreaView>
   );

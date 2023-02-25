@@ -7,6 +7,7 @@ import {
   Text,
   useColorScheme,
   View,
+  ActivityIndicator
 } from 'react-native';
 
 import {
@@ -19,29 +20,13 @@ import {
 
 import GoogleFit, {Scopes} from 'react-native-google-fit';
 import GoogleFitComponent from './GoogleFitComponent';
-
-function padTo2Digits(num) {
-  return num.toString().padStart(2, '0');
-}
-
-function convertMsToHoursMinutes(milliseconds) {
-  let seconds = Math.floor(milliseconds / 1000);
-  let minutes = Math.floor(seconds / 60);
-  let hours = Math.floor(minutes / 60);
-
-  seconds = seconds % 60;
-  minutes = minutes % 60;
-  hours = hours % 24;
-
-  return `${padTo2Digits(hours)} h ${padTo2Digits(minutes)} min`;
-}
-
+import { convertMsToHoursMinutes } from '../utils/DateOps';
 
 const HealthComponent = ({navigation}) => {
 
-  var [dailySteps, setDailySteps] = useState(0);
+  var [weeklySteps, setWeeklySteps] = useState([]);
+  var [weeklySleep, setWeeklySleep] = useState([]);
   var [heartRate, setHeartRate] = useState(0);
-  var [sleep, setSleep] = useState(null);
   var [loading, setLoading] = useState(true);
 
   const options = {
@@ -56,7 +41,7 @@ const HealthComponent = ({navigation}) => {
     var lastWeekDate = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() - 8,
+      today.getDate() - 7,
     );
     const opt = {
       startDate: lastWeekDate.toISOString(), // required ISO8601Timestamp
@@ -74,7 +59,13 @@ const HealthComponent = ({navigation}) => {
         if (res[i].source === 'com.google.android.gms:estimated_steps') {
           let data = res[i].steps.reverse();
           if(data.length !== 0) {
-            setDailySteps(data[0].value);
+            var stepsInLastWeek = [];
+            data.map((element) => {
+              stepsInLastWeek.push(element.value);
+            })
+            stepsInLastWeek.pop();
+            stepsInLastWeek.reverse();
+            setWeeklySteps(stepsInLastWeek);
           }
           else {
             setDailySteps(-1);
@@ -97,33 +88,25 @@ const HealthComponent = ({navigation}) => {
   };
 
   let fetchSleepData = async opt => {
-    var midnight = new Date();
-    midnight.setHours(0, 0, 0, 0);
-    let sleepTotal = 0;
-    const res = await GoogleFit.getSleepSamples(opt);
-    if(res.length === 0) {
-      setSleep('0 h 0 m');
-      return;
-    }
- 
-    for (var i = 0; i < res.length; i++) {
-      if (new Date(res[i].endDate) > Date.parse(midnight)) {
-        if (new Date(res[i].startDate) > Date.parse(midnight)) {
-          sleepTotal +=
-            Date.parse(res[i].endDate) - Date.parse(res[i].startDate);
-        } else {
-          sleepTotal += Date.parse(res[i].endDate) - Date.parse(midnight);
-        }
-        if (
-          i + 1 < res.length &&
-          Date.parse(res[i].startDate) < Date.parse(res[i + 1].endDate)
-        ) {
-          sleepTotal -=
-            Date.parse(res[i + 1].endDate) - Date.parse(res[i].startDate);
-        }
+
+  // Retrieve the sleep data from Google Fit
+  GoogleFit.getSleepSamples(opt)
+    .then((res) => {
+      // Parse the sleep data and format it as DAY-SLEEP_DURATION
+      const sleepData = res.map((sleep) => {
+        const date = new Date(sleep.startDate);
+        const duration = (Date.parse(sleep.endDate) - Date.parse(sleep.startDate)) / (1000 * 60 * 60);
+        return duration.toFixed(2);
+      });
+      const padLen = 7 - sleepData.length;
+      for(i=0;i<padLen;i++) {
+        sleepData.unshift('0.00');
       }
-    }
-    setSleep(convertMsToHoursMinutes(sleepTotal));
+      setWeeklySleep(sleepData);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   };
   
   let getAllDataFromAndroid = () => {
@@ -163,8 +146,14 @@ const HealthComponent = ({navigation}) => {
 
   return (
     <View style={[{flex: 1}]}>
-      <GoogleFitComponent navigation={navigation} />
-    </View>
+      {weeklySteps.length !== 0 ?
+      <GoogleFitComponent navigation={navigation} weeklySteps={weeklySteps} heartRate={heartRate} weeklySleep={weeklySleep}/>
+        : 
+      <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
+        <ActivityIndicator size={'large'} />
+      </View>
+      }
+      </View>
   );
 };
 

@@ -11,15 +11,15 @@ const OnboardingScreen = ({navigation}) => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#1f2026',
       }}>
       <View style={{marginTop: 20}}>
         <Text
           style={{
             fontFamily: 'Inter-Bold',
             fontWeight: 'bold',
-            fontSize: 30,
-            color: '#20315f',
+            fontSize: 35,
+            color: '#7289DA',
           }}>
           DAnke
         </Text>
@@ -33,7 +33,7 @@ const OnboardingScreen = ({navigation}) => {
       </View>
       <TouchableOpacity
         style={{
-          backgroundColor: '#56a774',
+          backgroundColor: '#7289DA',
           padding: 20,
           width: '90%',
           borderRadius: 10,

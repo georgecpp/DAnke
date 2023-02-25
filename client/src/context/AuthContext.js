@@ -14,7 +14,7 @@ export const AuthProvider = ({children}) => {
     const [userToken, setUserToken] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
 
-    const login = (name, email, photo,phoneNumber, googleAccessToken) => {
+    const login = async (name, email, photo,phoneNumber, googleAccessToken, googleRefreshToken) => {
         setIsLoading(true);
         // axios.post(`${BASE_URL}/auth/social-auth`, {
         //     name: name,
@@ -39,6 +39,7 @@ export const AuthProvider = ({children}) => {
                 photo: photo,
                 phoneNumber: phoneNumber,
                 googleAccessToken: googleAccessToken,
+                googleRefreshToken: googleRefreshToken,
                 token: 'asdasdas'
             },
             statusCode: 200
@@ -46,20 +47,20 @@ export const AuthProvider = ({children}) => {
         setUserInfo(userInfo);
         setUserToken(userInfo.data.token);
 
-        AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-        AsyncStorage.setItem('userToken', userInfo.data.token);
+        await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+        await AsyncStorage.setItem('userToken', userInfo.data.token);
 
         setIsLoading(false);
     }
 
-    const logout = () => {
+    const logout = async () => {
         setIsLoading(true);
         setUserToken(null);
-        AsyncStorage.removeItem('userToken');
-        AsyncStorage.removeItem('userInfo');
+        await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('userInfo');
         setIsLoading(false);
         if(connector) {
-            connector.killSession();
+            await connector.killSession();
         }
     }
 
