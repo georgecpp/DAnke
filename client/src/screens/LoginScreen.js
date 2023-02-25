@@ -8,24 +8,18 @@ import {
   Alert
 } from 'react-native';
 
-import LoginSVG from '../assets/images/misc/login.svg';
-import GoogleSVG from '../assets/images/misc/google.svg';
-import FacebookSVG from '../assets/images/misc/facebook.svg';
-import TwitterSVG from '../assets/images/misc/twitter.svg';
-import Gaming from '../assets/images/misc/gaming.svg';
-
+import BlockchainLink from '../assets/images/misc/blockchain-link.svg';
 
 import SocialMediaButton from '../components/SocialMediaButton';
 import { AuthContext } from '../context/AuthContext';
 import {
   GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
 } from '@react-native-google-signin/google-signin';
 
 import PhoneInput from "react-native-phone-number-input";
 import axios from "axios";
 import { requestUserPermission } from '../utils/NotificationUtils';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const LoginScreen = ({navigation}) => {
   
@@ -81,14 +75,38 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center', backgroundColor: '#1f2026'}}>
-      <View style={{paddingHorizontal: 25}}>
-        <View style={{alignItems: 'center'}}>
-          <Gaming
-            height={300}
-            width={300}
-            style={{transform: [{rotate: '-5deg'}]}}
-          />
+      <TouchableOpacity>
+        <AntDesign name="arrowleft" size={26} color="white" style={{backgroundColor: '#1f2026'}} />
+      </TouchableOpacity>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', justifyContent: 'space-evenly'}}>
+        <View>
+          <Text
+            style={{
+              fontFamily: 'Inter-Bold',
+              fontWeight: 'bold',
+              fontSize: 45,
+              color: '#fff',
+            }}>
+            DAnke
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'Inter-Bold',
+              fontWeight: 'bold',
+              fontSize: 25,
+              color: '#fff',
+            }}>
+          Let's connect first! 🔗
+          </Text>
+          <View style={{alignItems: 'center'}}>
+            <BlockchainLink
+              height={300}
+              width={300}
+            />
+          </View>
         </View>
+      </View>
+      <View style={{paddingHorizontal: 25}}>
         <View style={{alignItems:'center', flexDirection: 'column'}}>
           <PhoneInput
             ref={phoneInput}
@@ -112,8 +130,8 @@ const LoginScreen = ({navigation}) => {
               <SocialMediaButton 
                 buttonTitle="Google"
                 btnType="google"
-                color="black"
-                backgroundColors={["#ffffff", "#ffffff"]}
+                color="white"
+                backgroundColors={["#fff", "#7289DA"]}
                 source={require('../assets/images/search.png')}
                 marginLeftIcon={5}
                 onPress={() => {_googleSignIn()}}
@@ -143,7 +161,7 @@ const styleSheet = StyleSheet.create({
   phoneNumberView: {
     width: '80%',
     height: 50,
-    backgroundColor: 'white'
+    backgroundColor: '#7289DA'
   },
 
   button: {
@@ -159,7 +177,7 @@ const styleSheet = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     color: 'white'
-  }
+  },
 });
 
 export default LoginScreen;

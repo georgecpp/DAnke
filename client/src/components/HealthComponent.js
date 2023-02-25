@@ -10,14 +10,6 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
 import GoogleFit, {Scopes} from 'react-native-google-fit';
 import GoogleFitComponent from './GoogleFitComponent';
 import { convertMsToHoursMinutes } from '../utils/DateOps';
@@ -27,7 +19,6 @@ const HealthComponent = ({navigation}) => {
   var [weeklySteps, setWeeklySteps] = useState([]);
   var [weeklySleep, setWeeklySleep] = useState([]);
   var [heartRate, setHeartRate] = useState(0);
-  var [loading, setLoading] = useState(true);
 
   const options = {
     scopes: [
