@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Alert
+  Alert,
+  Animated,
 } from 'react-native';
 
 import BlockchainLink from '../assets/images/misc/blockchain-link.svg';
@@ -22,9 +23,11 @@ import { requestUserPermission } from '../utils/NotificationUtils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const LoginScreen = ({navigation}) => {
-  
+
+  const [scale] = useState(new Animated.Value(1));
+  const [position] = useState(new Animated.ValueXY({ x: 0, y: 0 }));
+
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [tokens, setTokens] = useState(null);
   const phoneInput = useRef(null);
   const {login} = useContext(AuthContext);
 
@@ -73,10 +76,39 @@ const LoginScreen = ({navigation}) => {
     requestUserPermission();
   }, []);
 
+  useEffect(() => {
+    const inhaleScale = Animated.timing(scale, {
+      toValue: 1.2,
+      duration: 1500,
+      useNativeDriver: true,
+    });
+    const exhaleScale = Animated.timing(scale, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: true,
+    });
+    const inhalePosition = Animated.timing(position, {
+      toValue: { x: 0, y: 25 },
+      duration: 1500,
+      useNativeDriver: true,
+    });
+    const exhalePosition = Animated.timing(position, {
+      toValue: { x: 0, y: 0 },
+      duration: 1500,
+      useNativeDriver: true,
+    });
+    const inhale = Animated.parallel([inhaleScale, inhalePosition]);
+    const exhale = Animated.parallel([exhaleScale, exhalePosition]);
+    const sequence = Animated.sequence([inhale, exhale]);
+
+    // Start the animation loop
+    Animated.loop(sequence).start();
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center', backgroundColor: '#1f2026'}}>
-      <TouchableOpacity>
-        <AntDesign name="arrowleft" size={26} color="white" style={{backgroundColor: '#1f2026'}} />
+      <TouchableOpacity style={{padding:15}} onPress={() => navigation.navigate('Onboarding')}>
+        <AntDesign name="arrowleft" size={30} color="white" style={{backgroundColor: '#1f2026'}} />
       </TouchableOpacity>
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', justifyContent: 'space-evenly'}}>
         <View>
@@ -98,44 +130,53 @@ const LoginScreen = ({navigation}) => {
             }}>
           Let's connect first! 🔗
           </Text>
-          <View style={{alignItems: 'center'}}>
-            <BlockchainLink
-              height={300}
-              width={300}
-            />
-          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Animated.View
+               style={{
+                transform: [
+                  { translateX: position.x },
+                  { translateY: position.y },
+                  { scale: scale },
+                ],
+              }}>
+            <BlockchainLink height={300} width={300} />
+          </Animated.View>
+         </View>
         </View>
-      </View>
-      <View style={{paddingHorizontal: 25}}>
-        <View style={{alignItems:'center', flexDirection: 'column'}}>
-          <PhoneInput
-            ref={phoneInput}
-            defaultValue={phoneNumber}
-            defaultCode="RO"
-            layout="first"
-            withShadow
-            autoFocus
-            containerStyle={styleSheet.phoneNumberView}
-            textContainerStyle={{ paddingVertical: 0 }}
-            onChangeFormattedText={text => {
-              setPhoneNumber(text);
-            }}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginBottom: 30,
-            }}>
-              <SocialMediaButton 
-                buttonTitle="Google"
-                btnType="google"
-                color="white"
-                backgroundColors={["#fff", "#7289DA"]}
-                source={require('../assets/images/search.png')}
-                marginLeftIcon={5}
-                onPress={() => {_googleSignIn()}}
+        <View style={{paddingHorizontal: 25}}>
+          <View style={{alignItems:'center', flexDirection: 'column'}}>
+            <PhoneInput
+              ref={phoneInput}
+              defaultValue={phoneNumber}
+              defaultCode="RO"
+              layout="first"
+              autoFocus={false}
+              containerStyle={styleSheet.phoneNumberView}
+              flagButtonStyle={{}}
+              textContainerStyle={{ paddingVertical: 0, borderRadius: 10 }}
+              onChangeFormattedText={text => {
+                setPhoneNumber(text);
+              }}
             />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginBottom: 30,
+              }}>
+                <SocialMediaButton 
+                  buttonTitle="Google"
+                  btnType="google"
+                  color="white"
+                  // backgroundColors={["#fff", "#7289DA", "#7289DA"]}
+                  backgroundColors={["#f8b26a", "#f47e60", "#e15b64", "#333333"]}
+                  // backgroundColors={["#fff","#f8b26a", "#f47e60", "#e15b64"]}
+                  // backgroundColors={["#93dbe9", "#689cc5", "#5e6fa3", "#3b4368"]}
+                  source={require('../assets/images/search.png')}
+                  marginLeftIcon={5}
+                  onPress={() => {_googleSignIn()}}
+              />
+            </View>
           </View>
         </View>
       </View>
@@ -159,9 +200,11 @@ const styleSheet = StyleSheet.create({
   },
 
   phoneNumberView: {
-    width: '80%',
     height: 50,
-    backgroundColor: '#7289DA'
+    backgroundColor: '#f8b26a',
+    // width: "40%",
+    borderRadius: 10,
+    margin:10,
   },
 
   button: {

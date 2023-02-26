@@ -97,8 +97,8 @@ const LeaderboardScreen = ({navigation}) => {
       icon='userAvatarUrl' 
       labelBy='userName'
       onRowPress = {(item, index) => {alert(item.userName + " clicked", item.highScore + " points, wow!") }}    
-      oddRowColor="#2C2F33"
-      evenRowColor="#6A5ACD"
+      oddRowColor="#7289DA"
+      evenRowColor="#1f2026"
       labelStyle={{color: 'white'}}
       rankStyle={{color: 'white'}}
       scoreStyle={{color: 'white'}}
