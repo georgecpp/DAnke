@@ -19,12 +19,17 @@ import "@ethersproject/shims"
 import { ethers } from "ethers";
 import { contract_address, contractABI } from '../web3/constants';
 import MetamaskSVG from '../assets/images/misc/metamask-fox.svg';
+import LatestTxs from '../components/LatestTxs';
+import SocialMediaButton from '../components/SocialMediaButton';
 
 
-const ANIMATION_DURATION = 1000;
+const ANIMATION_DURATION = 5000;
 
 const WalletScreen = ({navigation}) => {
 
+  // var blockNumber = 8567394;
+  const originBlockNumber = 8567394;
+  const [blockNumber, setBlockNumber] = useState(originBlockNumber);
   const [animationValue] = useState(new Animated.Value(0));
 
   const startAnimation = () => {
@@ -73,6 +78,14 @@ const WalletScreen = ({navigation}) => {
     };
   }, [])
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setBlockNumber((blockNumber+1) % originBlockNumber + originBlockNumber);
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [blockNumber]);
+
   return (
       <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -87,12 +100,28 @@ const WalletScreen = ({navigation}) => {
         </View>
         {!connector.connected ? (
           <View style={styles.connectWallet}>
-            <TouchableOpacity  onPress={() => {
-                stopAnimation();
-                authenticateUser();
-              }} style={styles.connectButton}>
-              <Text style={styles.connectButtonText}>Connect to Wallet</Text>
-            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginBottom: 30,
+              }}>
+              <SocialMediaButton 
+                    buttonTitle="Connect to wallet"
+                    btnType="google"
+                    color="white"
+                    // backgroundColors={["#fff", "#7289DA", "#7289DA"]}
+                    backgroundColors={["#fff", "#3999fc", "#3999fc", "#3999fc"]}
+                    // backgroundColors={["#fff","#f8b26a", "#f47e60", "#e15b64"]}
+                    // backgroundColors={["#93dbe9", "#689cc5", "#5e6fa3", "#3b4368"]}
+                    source={require('../assets/images/walletconnect.png')}
+                    marginLeftIcon={5}
+                    onPress={() => {
+                      stopAnimation();
+                      authenticateUser();
+                    }} 
+              />
+            </View>
             <Animated.View
               style={[
                 styles.loadingContainer,
@@ -105,12 +134,9 @@ const WalletScreen = ({navigation}) => {
               ]}
             >
               <MetamaskSVG
-                height={300}
-                width={300}
+                height={200}
+                width={200}
               />
-              <View style={styles.connectTextContainer}>
-                <Text style={styles.connectText}>Future awaits</Text>
-              </View>
             </Animated.View>
           </View>
          ) : ( 
@@ -136,6 +162,7 @@ const WalletScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         )}
+        <LatestTxs blockNo={(blockNumber).toString(16)} />
       </ScrollView>
     </SafeAreaView>
   )
