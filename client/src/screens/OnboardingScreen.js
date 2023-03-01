@@ -1,10 +1,27 @@
-import React from 'react'
-import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
+import React, {useRef, useEffect} from 'react'
+import { SafeAreaView, View, Text, TouchableOpacity, Animated } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Gaming from '../assets/images/misc/gaming.svg';
+import Ethereum from '../assets/images/misc/ethereum_logo.svg';
 
 const OnboardingScreen = ({navigation}) => {
+
+  const rotation = useRef(new Animated.Value(0)).current;
+
+  const startRotation = () => {
+    Animated.loop(
+      Animated.timing(rotation, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
+  useEffect(() => {
+    startRotation();
+  }, []);  
+
   return (
     <SafeAreaView
       style={{
@@ -13,23 +30,41 @@ const OnboardingScreen = ({navigation}) => {
         alignItems: 'center',
         backgroundColor: '#1f2026',
       }}>
-      <View style={{marginTop: 20}}>
-        <Text
-          style={{
-            fontFamily: 'Inter-Bold',
-            fontWeight: 'bold',
-            fontSize: 35,
-            color: '#7289DA',
-          }}>
-          DAnke
-        </Text>
-      </View>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Gaming
-          width={300}
-          height={300}
-          style={{transform: [{rotate: '-15deg'}]}}
-        />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', justifyContent: 'space-evenly'}}>
+        <View>
+          <Text
+            style={{
+              fontFamily: 'Inter-Bold',
+              fontWeight: 'bold',
+              fontSize: 45,
+              color: '#fff',
+            }}>
+            DAnke
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'Inter-Bold',
+              fontWeight: 'bold',
+              fontSize: 25,
+              color: '#fff',
+            }}>
+          Thankful 🤝🏻 in Web3!
+          </Text>
+        </View>
+        <Animated.View
+              style={{
+                transform: [
+                  {
+                    rotate: rotation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0deg', '360deg'],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <Ethereum width={300} height={300} />
+        </Animated.View>
       </View>
       <TouchableOpacity
         style={{

@@ -5,7 +5,6 @@ import CustomDrawer from '../components/CustomDrawer';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 import TabNavigator from './TabNavigator';
@@ -20,9 +19,9 @@ const AppStack = () => {
       drawerContent={props => <CustomDrawer {...props} />}
       screenOptions={{
         headerShown: false,
-        drawerActiveBackgroundColor: '#56a774',
+        drawerActiveBackgroundColor: '#7289DA',
         drawerActiveTintColor: '#fff',
-        drawerInactiveTintColor: '#333',
+        drawerInactiveTintColor: '#fff',
         drawerLabelStyle: {
           marginLeft: -25,
           fontFamily: 'Roboto-Medium',
@@ -35,15 +34,6 @@ const AppStack = () => {
         options={{
           drawerIcon: ({color}) => (
             <Ionicons name="home-outline" size={22} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          drawerIcon: ({color}) => (
-            <Ionicons name="person-outline" size={22} color={color} />
           ),
         }}
       />

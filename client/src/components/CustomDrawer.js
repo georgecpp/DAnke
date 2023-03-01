@@ -18,12 +18,12 @@ import { AuthContext } from '../context/AuthContext';
 const CustomDrawer = props => {
   const {logout, userInfo} = useContext(AuthContext);
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#1f2026'}}>
       <DrawerContentScrollView
         {...props}
-        contentContainerStyle={{backgroundColor: '#8200d6'}}>
+        contentContainerStyle={{backgroundColor: '#1f2026'}}>
         <ImageBackground
-          source={require('../assets/images/menu-bg.jpeg')}
+          source={require('../assets/images/menu-bg-disc-3.png')}
           style={{padding: 20}}>
           <Image
             source={{uri:userInfo.data.photo}}
@@ -38,32 +38,21 @@ const CustomDrawer = props => {
             }}>
             {userInfo.data.name}
           </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                color: '#fff',
-                fontFamily: 'Roboto-Regular',
-                marginRight: 5,
-              }}>
-              280 Coins
-            </Text>
-            <FontAwesome5 name="coins" size={14} color="#fff" />
-          </View>
         </ImageBackground>
-        <View style={{flex: 1, backgroundColor: '#fff', paddingTop: 10}}>
+        <View style={{flex: 1, backgroundColor: '#1f2026', paddingTop: 10}}>
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+      <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#7289DA'}}>
         <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="share-social-outline" size={22} color='#333' />
+            <Ionicons name="share-social-outline" size={22} color='#fff' />
             <Text
               style={{
                 fontSize: 15,
                 fontFamily: 'Roboto-Medium',
                 marginLeft: 5,
-                color: '#333'
+                color: '#fff'
               }}>
               Tell a Friend
             </Text>
@@ -71,13 +60,13 @@ const CustomDrawer = props => {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {logout()}} style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="exit-outline" size={22} color='#333' />
+            <Ionicons name="exit-outline" size={22} color='#fff' />
             <Text
               style={{
                 fontSize: 15,
                 fontFamily: 'Roboto-Medium',
                 marginLeft: 5,
-                color: '#333'
+                color: '#fff'
               }}>
               Sign Out
             </Text>
