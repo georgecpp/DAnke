@@ -89,6 +89,8 @@ const HealthComponent = ({navigation}) => {
         const duration = (Date.parse(sleep.endDate) - Date.parse(sleep.startDate)) / (1000 * 60 * 60);
         return duration.toFixed(2);
       });
+      
+      if(sleepData.length>7) sleepData.shift();
       const padLen = 7 - sleepData.length;
       for(i=0;i<padLen;i++) {
         sleepData.unshift('0.00');

@@ -79,19 +79,19 @@ const stepsData = {
           title="Steps"
           icon="walk"
           iconColor="#E8BEAC"
-          value={weeklySteps[6]}
+          value={weeklySteps[weeklySteps.length - 1]}
         />
         <FitHealthStat
           title="Sleep"
           icon="sleep"
           iconColor="#4579ac"
-          value={convertMsToHoursMinutes(weeklySleep[6] * (1000 * 60 * 60))}
+          value={convertMsToHoursMinutes(weeklySleep[weeklySleep.length - 1] * (1000 * 60 * 60))}
         />
       </View>
       <View>
         <FitChart
           title={"Sleep"}
-          description={`${convertMsToHoursMinutes(weeklySleep[6] * (1000 * 60 * 60))} • Yesterday`}
+          description={`${convertMsToHoursMinutes(weeklySleep[weeklySleep.length - 1] * (1000 * 60 * 60))} • Yesterday`}
           data={sleepData}
           baseline={8}
           yAxisSuffix={"h"}
