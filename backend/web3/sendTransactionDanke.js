@@ -38,5 +38,5 @@ async function sendTransactionDanke(_fromAddress, _toAddress, _amount) {
     contract.methods.balanceOf(fromAddress).call().then(function(balance){console.log(balance)})
 }
 
-sendTransactionDanke("0x960718cedFB87b56D86FBDa00a11DEa00bf74be3", "0x8dCE5CD13E9fE5a80cC9b49696b4AdE41f98Df05", 5);
+// sendTransactionDanke("0x960718cedFB87b56D86FBDa00a11DEa00bf74be3", "0x8dCE5CD13E9fE5a80cC9b49696b4AdE41f98Df05", 5);
 module.exports = sendTransactionDanke;
