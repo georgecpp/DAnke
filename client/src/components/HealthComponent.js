@@ -84,12 +84,21 @@ const HealthComponent = ({navigation}) => {
   GoogleFit.getSleepSamples(opt)
     .then((res) => {
       // Parse the sleep data and format it as DAY-SLEEP_DURATION
+      var currStart = res[0].startDate;
       const sleepData = res.map((sleep) => {
-        const date = new Date(sleep.startDate);
-        const duration = (Date.parse(sleep.endDate) - Date.parse(sleep.startDate)) / (1000 * 60 * 60);
+        var duration = 0;
+        if(Date.parse(currStart) - Date.parse(sleep.startDate) > 0) {
+          currStart = sleep.startDate;
+          return duration.toFixed(2);
+        }
+        duration = (Date.parse(sleep.endDate) - Date.parse(sleep.startDate)) / (1000 * 60 * 60);
+        currStart = sleep.startDate;
         return duration.toFixed(2);
+      })
+      .filter((sleepDuration) => {
+        return sleepDuration !== "0.00";
       });
-      
+
       if(sleepData.length>7) sleepData.shift();
       const padLen = 7 - sleepData.length;
       for(i=0;i<padLen;i++) {
