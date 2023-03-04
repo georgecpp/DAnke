@@ -1,8 +1,9 @@
 const sendTransactionDanke = require('../web3/sendTransactionDanke');
-
 const router = require('express').Router();
 require('dotenv').config();
 
+// TODO: call util function for calculation of reward based on respective user vitals stored in db
+// TODO: add reward object to database + send notification to respective user
 router.post('/rewardUser', (req, res) => {
     
     try {
@@ -25,6 +26,16 @@ router.post('/rewardUser', (req, res) => {
     catch(err) {
         return res.status(404).send(err);
     }
+});
+
+// TODO: get all reward objects registered today for all users to retrieve in the leaderboard screen
+router.get('/todayRewards', async (req, res) => {
+
+});
+
+// TODO: get all user specific rewards with period specified in req.param (lastNdays=7)
+router.get('/userRewards', async (req, res) => {
+
 });
 
 module.exports = router;

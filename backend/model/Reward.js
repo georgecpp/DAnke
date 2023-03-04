@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-const scoreSchema = new mongoose.Schema({
+const rewardSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    score: {
+    rewardDAC: {
         type: Number,
         required: true
     },
@@ -16,4 +16,4 @@ const scoreSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('Score', scoreSchema);
+module.exports = mongoose.model('Reward', rewardSchema);

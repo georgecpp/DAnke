@@ -3,58 +3,38 @@ const BSON = require('bson');
 
 
 const userSchema = new mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        default: null
-    },
     name: {
         type: String,
         required: true,
         default: null
     },
-    img: {
+    email: {
         type: String,
+        required: true,
+        default: null
+    },
+    photo: {
+      type: String,
       required: false,
       default: null
     },
-    team: {
+    phoneNumber: {
         type: String,
         required: true,
         default: null
     },
-    role: {
+    googleAccessToken: {
         type: String,
         required: true,
-        default: 'user'
+        default: null
     },
-    actualBMI: {
-        type: Number,
+    googleRefreshToken: {
+        type: String,
         required: true,
         default: null
     },
-    heartRate: {
-        type: Number,
-        required: true,
-        default: null
-    },
-    saturation: {
-        type: Number,
-        required: true,
-        default: null
-    },
-    temperature: {
-        type: Number,
-        required: true,
-        default: null
-    },
-    steps: {
-        type: Number,
-        required: true,
-        default: null
-    },
-    sleepQuality: {
-        type: Number,
+    fcmRegistrationToken: {
+        type: String,
         required: true,
         default: null
     },

@@ -9,29 +9,23 @@ const createAndAssignJWT = (user, res) => {
     res.status(200).header('auth-token-danke', token).send(
         {
             id: user._id,
-            jwt: token,
-            email: user.email,
+            token: token,
             name: user.name,
-            img: user.img,
-            heartRate: user.heartRate,
-            saturation: user.saturation,
-            temperature: user.temperature,
-            steps: user.steps,
-            sleepQuality: user.sleepQuality
+            email: user.email,
+            photo: user.photo,
+            phoneNumber: user.phoneNumber,
+            fcmRegistrationToken: user.fcmRegistrationToken
         });
 }
 const registerUser = async(req, res) => {
 
     // create a new user.
     const user = new User({
-        email: req.body.email,
         name: req.body.name,
-        img: req.body.img,
-        heartRate: req.body.heartRate,
-        saturation: req.body.saturation,
-        temperature: req.body.temperature,
-        steps: req.body.steps,
-        sleepQuality: req.body.sleepQuality
+        email: req.body.email,
+        photo: req.body.photo,
+        phoneNumber: req.body.phoneNumber,
+        fcmRegistrationToken: req.body.fcmRegistrationToken
     });
 
     try {
@@ -57,7 +51,7 @@ router.post('/social-auth', async(req, res) => {
     // social media picture may differ from login to login.
     // so update it.
     await User.updateOne({_id: user._id}, {
-        img: req.body.img
+        photo: req.body.photo
     });
 
     // create and assign JWT for this session.

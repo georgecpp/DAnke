@@ -9,7 +9,8 @@ const path = require('path');
 // Import routes
 const homeRoute = require('./routes/home');
 const authRoute = require('./routes/auth');
-const dankeRoute = require('./routes/danke');
+const rewardRoute = require('./routes/reward');
+const vitalsRoute = require('./routes/vitals');
 
 // Connect to DB  -- implement.
 mongoose.connect(process.env.DB_CONNECTION, () => {
@@ -24,7 +25,8 @@ app.use(cors());
 // Route Middlewares
 app.use('/', homeRoute);
 app.use('/auth', authRoute);
-app.use('/danke', dankeRoute);
+app.use('/reward', rewardRoute);
+app.use('/vitals', vitalsRoute);
 
 app.listen(process.env.PORT || 8080, () => {
     console.log('Server Up and running!');
