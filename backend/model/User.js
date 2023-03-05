@@ -23,16 +23,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: null
     },
-    googleAccessToken: {
-        type: String,
-        required: true,
-        default: null
-    },
-    googleRefreshToken: {
-        type: String,
-        required: true,
-        default: null
-    },
     fcmRegistrationToken: {
         type: String,
         required: true,
