@@ -4,6 +4,7 @@ import React, {createContext, useState, useEffect} from "react";
 import { BASE_URL } from "../utils/config";
 import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
 import messaging from '@react-native-firebase/messaging';
+import { Alert } from "react-native";
 
 
 export const AuthContext = createContext();
@@ -17,47 +18,47 @@ export const AuthProvider = ({children}) => {
 
     const login = async (name, email, photo,phoneNumber, googleAccessToken, googleRefreshToken) => {
         setIsLoading(true);
-        // axios.post(`${BASE_URL}/auth/social-auth`, {
-        //     name: name,
-        //     email: email,
-        //     photo: photo
-        // })
-        // .then(res => {
-        //     let userInfo = res.data;
-        //     setUserInfo(userInfo);
-        //     setUserToken(userInfo.data.token);
 
-        //     AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-        //     AsyncStorage.setItem('userToken', userInfo.data.token);
-        // })
-        // .catch(e => {
-        //     console.log(`Login error: ${e}`);
-        // });
         const fcmRegistrationToken = await messaging().getToken();
-          if (!fcmRegistrationToken) {
-            Alert.alert(
-              'Firebase token registration error! User will not receive notifications...',
-            );
+        if (!fcmRegistrationToken) {
+          Alert.alert(
+            'Firebase token registration error! User will not receive notifications...',
+          );
         }
-        let userInfo = {
-            data: {
-                name: name,
-                email: email,
-                photo: photo,
-                phoneNumber: phoneNumber,
-                googleAccessToken: googleAccessToken,
-                googleRefreshToken: googleRefreshToken,
-                fcmRegistrationToken: fcmRegistrationToken,
-                token: 'asdasdas'
-            },
-            statusCode: 200
-        }
-        setUserInfo(userInfo);
-        setUserToken(userInfo.data.token);
+        axios.post(`${BASE_URL}/auth/social-auth`, {
+            name: name,
+            email: email,
+            photo: photo,
+            phoneNumber: phoneNumber,
+            fcmRegistrationToken: fcmRegistrationToken
+        })
+        .then(res => {
+            let userInfo = {
+                data: {
+                    id: res.data.id,
+                    name: name,
+                    email: email,
+                    photo: photo,
+                    phoneNumber: phoneNumber,
+                    googleAccessToken: googleAccessToken,
+                    googleRefreshToken: googleRefreshToken,
+                    fcmRegistrationToken: fcmRegistrationToken,
+                    token: res.data.token
+                },
+                statusCode: 200
+            }
 
-        await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-        await AsyncStorage.setItem('userToken', userInfo.data.token);
-        console.log(fcmRegistrationToken);
+            setUserInfo(userInfo);
+            setUserToken(userInfo.data.token);
+           
+            AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+            AsyncStorage.setItem('userToken', userInfo.data.token);
+
+        })
+        .catch(e => {
+            Alert.alert(`Login error: ${e}`);
+        });
+
         setIsLoading(false);
     }
 
