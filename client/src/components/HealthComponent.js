@@ -148,7 +148,7 @@ const HealthComponent = ({navigation}) => {
 
   return (
     <View style={[{flex: 1}]}>
-      {weeklySteps.length !== 0 ?
+      {weeklySteps.length !== 0 && heartRate !== 0 && weeklySleep.length !== 0 ?
       <GoogleFitComponent navigation={navigation} weeklySteps={weeklySteps} heartRate={heartRate} weeklySleep={weeklySleep}/>
         : 
       <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>

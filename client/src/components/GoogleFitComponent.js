@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import { Text, View, Dimensions, ScrollView } from "react-native";
 import FitChart from "./FitChart";
 import FitImage from "./FitImage";
@@ -49,7 +49,16 @@ const stepsData = {
   ]
 };
 
-  const {userInfo} = useContext(AuthContext);
+const {userInfo} = useContext(AuthContext);
+
+useEffect(() => {
+  console.log(userInfo.data.id);
+  console.log(weeklySteps[weeklySteps.length - 1]);
+  console.log(heartRate);
+  console.log(convertMsToHoursMinutes(weeklySleep[weeklySleep.length - 1] * (1000 * 60 * 60)));
+  console.log(currentDate);
+}, []);
+
   return (
     <ScrollView style={{ backgroundColor: "#1f2026" }}>
       <View style={{justifyContent: 'space-evenly'}}>
