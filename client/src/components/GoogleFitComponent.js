@@ -1,11 +1,13 @@
 import React, {useContext, useEffect} from "react";
-import { Text, View, Dimensions, ScrollView } from "react-native";
+import { Text, View, Dimensions, ScrollView, Alert } from "react-native";
 import FitChart from "./FitChart";
 import FitImage from "./FitImage";
 import { AuthContext } from "../context/AuthContext";
 import FitHealthStat from "./FitHealthStat";
 import moment from 'moment';
 import { convertMsToHoursMinutes } from "../utils/DateOps";
+import axios from "axios";
+import { BASE_URL } from "../utils/config";
 
 const { width } = Dimensions.get("screen");
 
@@ -51,12 +53,26 @@ const stepsData = {
 
 const {userInfo} = useContext(AuthContext);
 
+const sendVitals = async () => {
+  axios.post(`${BASE_URL}/vitals/saveVitals`, {
+            userId: userInfo.data.id,
+            steps: weeklySteps[weeklySteps.length - 1],
+            heartRateAvg: heartRate,
+            sleep: convertMsToHoursMinutes(weeklySleep[weeklySleep.length - 1] * (1000 * 60 * 60)),
+            savedAtDate: currentDate
+        })
+        .then(res => {
+          if(res.status !== 200) {
+            Alert.alert('Vitals not sent correctly: ' + res.statusText);
+          }
+        })
+        .catch(e => {
+            Alert.alert(`Vitals send error: ${e}`);
+        });
+}
+
 useEffect(() => {
-  console.log(userInfo.data.id);
-  console.log(weeklySteps[weeklySteps.length - 1]);
-  console.log(heartRate);
-  console.log(convertMsToHoursMinutes(weeklySleep[weeklySleep.length - 1] * (1000 * 60 * 60)));
-  console.log(currentDate);
+  sendVitals();
 }, []);
 
   return (
