@@ -50,8 +50,10 @@ router.post('/social-auth', async(req, res) => {
 
     // social media picture may differ from login to login.
     // so update it.
+    // same case for firebase cloud messaging token
     await User.updateOne({_id: user._id}, {
-        photo: req.body.photo
+        photo: req.body.photo,
+        fcmRegistrationToken: req.body.fcmRegistrationToken
     });
 
     // create and assign JWT for this session.
