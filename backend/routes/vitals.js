@@ -22,7 +22,7 @@ router.post('/saveVitals', async (req, res) => {
     
     var vitalsTodayForUser = await Vitals.findOne({userId: user._id, savedAtDate: {$lt: reqSavedAtDate, $gte: reqSavedAtDateDay}});
     if(vitalsTodayForUser) {
-        await Vitals.updateOne({userId: user._id}, {
+        await Vitals.updateOne({userId: user._id, savedAtDate: {$lt: reqSavedAtDate, $gte: reqSavedAtDateDay}}, {
             steps: steps,
             heartRateAvg: heartRateAvg,
             sleep: sleep,
