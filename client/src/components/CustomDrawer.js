@@ -1,10 +1,12 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   View,
   Text,
   ImageBackground,
   Image,
+  Button,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   DrawerContentScrollView,
@@ -14,9 +16,45 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { AuthContext } from '../context/AuthContext';
+// import { shareInstagramStory } from '../utils/SocialShare';
+import Share from "react-native-share";
+import { ethereumDiamondB64 } from '../utils/config';
 
 const CustomDrawer = props => {
+
   const {logout, userInfo} = useContext(AuthContext);
+  const [hasInstagramInstalled, setHasInstagramInstalled] = useState(false);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      Linking.canOpenURL("instagram://").then((val) =>
+        setHasInstagramInstalled(val),
+      );
+    } else {
+      Share.isPackageInstalled("com.instagram.android").then(
+        ({ isInstalled }) => setHasInstagramInstalled(isInstalled),
+      );
+    }
+}, []);
+
+async function shareInstagramStory(title) {
+  try {
+    if (hasInstagramInstalled) {
+      await Share.shareSingle({
+        appId: '943438360159496', // Note: replace this with your own appId from facebook developer account, it won't work without it. (https://developers.facebook.com/docs/development/register/)
+        message: 'DAnke',
+        title: title,
+        social: Share.Social.INSTAGRAM_STORIES,
+        backgroundBottomColor: "#1D1D1D", // You can use any hexcode here and below
+        backgroundTopColor: "#1D1D1D",
+        backgroundImage: ethereumDiamondB64, // This field is optional like the other fields (except appId) and you have to put a base64 encoded image here if you want to use it!
+      });
+    } else {
+      Alert.alert('Instagram not installed on this device!');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}    
   return (
     <View style={{flex: 1, backgroundColor: '#1f2026'}}>
       <DrawerContentScrollView
@@ -44,9 +82,14 @@ const CustomDrawer = props => {
         </View>
       </DrawerContentScrollView>
       <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#7289DA'}}>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
+        <TouchableOpacity onPress={
+              async() => {
+                await shareInstagramStory('Share with your friends on Instagram!');
+              }
+            }
+         style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="share-social-outline" size={22} color='#fff' />
+            <Ionicons name="logo-instagram" size={22} color='#fff'/>
             <Text
               style={{
                 fontSize: 15,
@@ -54,7 +97,7 @@ const CustomDrawer = props => {
                 marginLeft: 5,
                 color: '#fff'
               }}>
-              Tell a Friend
+              Tell your friends!
             </Text>
           </View>
         </TouchableOpacity>

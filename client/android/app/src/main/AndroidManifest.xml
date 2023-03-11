@@ -8,6 +8,7 @@
           <action android:name="android.intent.action.VIEW" />
           <data android:scheme="wc"/>
       </intent>
+      <package android:name="com.instagram.android" />
     </queries>
 
     <application

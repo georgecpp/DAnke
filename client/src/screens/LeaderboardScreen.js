@@ -12,6 +12,7 @@ import {
 
 import { AuthContext } from '../context/AuthContext';
 import Leaderboard from '../components/Leaderboard';
+import { openDrawer } from "../utils/NavigationService";
 import axios from "axios";
 
 const LeaderboardScreen = ({navigation}) => {
@@ -149,10 +150,12 @@ const LeaderboardHeader = ({currentUser, userRank}) => {
             <Text style={{ color: 'white', fontSize: 25, flex: 1, textAlign: 'right', marginRight: 40 }}>
                 {ordinal_suffix_of(userRank)}
             </Text>
-            <Image style={{ flex: .66, height: 60, width: 60, borderRadius: 60 / 2 }}
-                source={{ uri: currentUser.userAvatarUrl}} />
+            <TouchableOpacity onPress={() => openDrawer()}>
+              <Image style={{ flex: 1, paddingVertical:30,  height: 60, width: 60, borderRadius: 60 / 2 }}
+                  source={{ uri: currentUser.userAvatarUrl}} />
+            </TouchableOpacity>
             <Text style={{ color: 'white', fontSize: 25, flex: 1, marginLeft: 40 }}>
-                {currentUser.highScore}pts
+                {currentUser.highScore} DAC
             </Text>
          </>
         }
