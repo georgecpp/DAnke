@@ -1,12 +1,12 @@
 const dotenv = require('dotenv');
 var admin = require("firebase-admin");
-var serviceAccount = require("./danke-118ac-firebase-adminsdk-ingm6-187cd4c1cb.json");
+var serviceAccount = require("./danke-a8686-firebase-adminsdk-p0s3j-45cea33637.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 dotenv.config();
 
-module.exports = function(fcmRegistrationTokens, title, body, priority) {
+module.exports = function(fcmRegistrationTokens, title, body) {
 
     const data = {
       message: {

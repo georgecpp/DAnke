@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://backend_here';
+export const BASE_URL = 'http://3.69.101.106:2409';

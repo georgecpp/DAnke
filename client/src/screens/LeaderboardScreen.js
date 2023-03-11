@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   Alert,
   Image,
-  Text
+  Text,
+  ActivityIndicator
 } from 'react-native';
 
 import { AuthContext } from '../context/AuthContext';
-import Leaderboard from 'react-native-leaderboard';
+import Leaderboard from '../components/Leaderboard';
 import axios from "axios";
 
 const LeaderboardScreen = ({navigation}) => {
@@ -39,13 +40,15 @@ const LeaderboardScreen = ({navigation}) => {
   }
 
   const getLeaderboardData = async () => {
-
-    var _currentUser = {
-      userName: userInfo.data.name,
-      userAvatarUrl: userInfo.data.photo,
-      highScore: 91,
-    };
-    setCurrentUser(_currentUser);    
+    
+    const todayRewardsResponse = await axios.get(`http://3.69.101.106:2409/reward/todayRewards`);
+    const usersRewards = todayRewardsResponse.data;
+    const _currentUser = usersRewards.find(user => user.phoneNumber === userInfo.data.phoneNumber);
+    setCurrentUser({
+      userName: _currentUser.name,
+      userAvatarUrl: _currentUser.photo,
+      highScore: _currentUser.rewardToday
+    });    
     const refreshAccessTokenResponse = await axios.post(`https://oauth2.googleapis.com/token?client_id=1069286417092-vtilvanv1eo8jg9ts16pcjl38dc5o9l4.apps.googleusercontent.com&client_secret=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&grant_type=refresh_token&refresh_token=${userInfo.data.googleRefreshToken}`, {});
     const refreshedAccessToken = refreshAccessTokenResponse.data.access_token;
     var peopleAPIConfig = {
@@ -59,16 +62,32 @@ const LeaderboardScreen = ({navigation}) => {
     axios(peopleAPIConfig)
     .then(function (response) {
       if(response.status === 200) {
-        var users = response.data.connections.map(function (connection){
+        var users = response.data.connections
+        .filter(connection => { 
+            for(i=0;i<usersRewards.length;i++) {
+              if(usersRewards[i].phoneNumber === connection.phoneNumbers[0].canonicalForm && connection.phoneNumbers[0].canonicalForm !== _currentUser.phoneNumber)
+                return true;
+            }
+            return false;
+          })
+        .map((connection) => {
+          var rewardTodayForThatUser = 0;
+            for(i=0;i<usersRewards.length;i++) {
+              if(usersRewards[i].phoneNumber === connection.phoneNumbers[0].canonicalForm) {
+                rewardTodayForThatUser = usersRewards[i].rewardToday;
+              }
+            }
           return {
             userName: connection.names[0].displayName,
             userAvatarUrl: connection.photos[0].url,
-            highScore: 90
+            highScore: rewardTodayForThatUser
           }
-        }).filter(function(user){
-          return user.userName !== _currentUser.userName
         });
-        users.push(_currentUser);
+        users.push({
+          userName: _currentUser.name,
+          userAvatarUrl: _currentUser.photo,
+          highScore: _currentUser.rewardToday
+        });
         setLeaderboardData(users);
       }
       else {
@@ -90,20 +109,28 @@ const LeaderboardScreen = ({navigation}) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1f2026', }}>
-      <LeaderboardHeader currentUser={currentUser} userRank={userRank}/>
-      <Leaderboard
-      data={leaderboardData}
-      sortBy='highScore'
-      icon='userAvatarUrl' 
-      labelBy='userName'
-      onRowPress = {(item, index) => {alert(item.userName + " clicked", item.highScore + " points, wow!") }}    
-      oddRowColor="#7289DA"
-      evenRowColor="#1f2026"
-      labelStyle={{color: 'white'}}
-      rankStyle={{color: 'white'}}
-      scoreStyle={{color: 'white'}}
-      sort={sort}
-      />
+      {currentUser!==null && leaderboardData.length > 0 ?
+      <>
+        <LeaderboardHeader currentUser={currentUser} userRank={userRank}/>
+        <Leaderboard
+        data={leaderboardData}
+        sortBy='highScore'
+        icon='userAvatarUrl' 
+        labelBy='userName'
+        onRowPress = {(item, index) => {alert(item.userName + " clicked", item.highScore + " points, wow!") }}    
+        oddRowColor="#7289DA"
+        evenRowColor="#1f2026"
+        labelStyle={{color: 'white'}}
+        rankStyle={{color: 'white'}}
+        scoreStyle={{color: 'white'}}
+        sort={sort}
+        />
+      </>
+      :
+      <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
+        <ActivityIndicator size={'large'} />
+      </View>
+    }
     </View>
   )
 }

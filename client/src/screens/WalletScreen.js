@@ -30,6 +30,7 @@ const WalletScreen = ({navigation}) => {
   // var blockNumber = 8567394;
   const originBlockNumber = 8567394;
   const [blockNumber, setBlockNumber] = useState(originBlockNumber);
+  const [increment, setIncrement] = useState(true);
   const [animationValue] = useState(new Animated.Value(0));
 
   const startAnimation = () => {
@@ -80,11 +81,26 @@ const WalletScreen = ({navigation}) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setBlockNumber((blockNumber+1) % originBlockNumber + originBlockNumber);
+      if(increment) {
+        if(blockNumber === originBlockNumber + 5) {
+          setIncrement(false);
+        }
+        else {
+          setBlockNumber(blockNumber => blockNumber +1);
+        }
+      }
+      else {
+        if(blockNumber === originBlockNumber) {
+          setIncrement(true);
+        }
+        else {
+          setBlockNumber(blockNumber => blockNumber -1);
+        }
+      }
     }, 5000);
 
     return () => clearTimeout(timeout);
-  }, [blockNumber]);
+  }, [increment, blockNumber]);
 
   return (
       <SafeAreaView style={styles.container}>
