@@ -18,7 +18,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { AuthContext } from '../context/AuthContext';
 // import { shareInstagramStory } from '../utils/SocialShare';
 import Share from "react-native-share";
-import { ethereumDiamondB64 } from '../utils/config';
+import { ethereumDiamondB64, dankeIgStoryB64, dankeIgStoryStarsB64 } from '../utils/config';
 
 const CustomDrawer = props => {
 
@@ -46,7 +46,7 @@ async function shareInstagramStory(title) {
         social: Share.Social.INSTAGRAM_STORIES,
         backgroundBottomColor: "#1D1D1D", // You can use any hexcode here and below
         backgroundTopColor: "#1D1D1D",
-        backgroundImage: ethereumDiamondB64, // This field is optional like the other fields (except appId) and you have to put a base64 encoded image here if you want to use it!
+        backgroundImage: dankeIgStoryB64, // This field is optional like the other fields (except appId) and you have to put a base64 encoded image here if you want to use it!
       });
     } else {
       Alert.alert('Instagram not installed on this device!');
