@@ -21,6 +21,7 @@ import { contract_address, contractABI } from '../web3/constants';
 import MetamaskSVG from '../assets/images/misc/metamask-fox.svg';
 import LatestTxs from '../components/LatestTxs';
 import SocialMediaButton from '../components/SocialMediaButton';
+import RewardTracker from '../components/RewardTracker';
 
 
 const ANIMATION_DURATION = 5000;
@@ -154,31 +155,34 @@ const WalletScreen = ({navigation}) => {
                 width={200}
               />
             </Animated.View>
+            <LatestTxs blockNo={(blockNumber).toString(16)} />
           </View>
          ) : ( 
-          <View style={styles.connectedWallet}>
-            <View style={styles.accountInfo}>
-              <Text style={styles.accountLabel}>Connected account:</Text>
-              <Text style={styles.accountValue}>{connector.session.accounts[0].slice(0,10)}</Text>
+          <ScrollView>
+            <View style={styles.connectedWallet}>
+              <View style={styles.accountInfo}>
+                <Text style={styles.accountLabel}>Connected account:</Text>
+                <Text style={styles.accountValue}>{connector.session.accounts[0].slice(0,10)}</Text>
+              </View>
+              <View style={styles.walletInfo}>
+                <Text style={styles.walletLabel}>Wallet provider:</Text>
+                <Text style={styles.walletValue}>{connector.session.peerMeta.name}</Text>
+              </View>
+              <View style={styles.balanceInfo}>
+                <Text style={styles.balanceLabel}>DAC balance:</Text>
+                <Text style={styles.balanceValue}>{balanceDAC}⚡</Text>
+              </View>
+              <MetamaskSVG
+              height={200}
+              width={200}
+              />
+              <TouchableOpacity onPress={() => {connector.killSession(); startAnimation()}} style={styles.disconnectButton}>
+                <Text style={styles.disconnectButtonText}>Disconnect Wallet</Text>
+              </TouchableOpacity>
+              <RewardTracker />
             </View>
-            <View style={styles.walletInfo}>
-              <Text style={styles.walletLabel}>Wallet provider:</Text>
-              <Text style={styles.walletValue}>{connector.session.peerMeta.name}</Text>
-            </View>
-            <View style={styles.balanceInfo}>
-              <Text style={styles.balanceLabel}>DAC balance:</Text>
-              <Text style={styles.balanceValue}>{balanceDAC}⚡</Text>
-            </View>
-            <MetamaskSVG
-            height={200}
-            width={200}
-            />
-            <TouchableOpacity onPress={() => {connector.killSession(); startAnimation()}} style={styles.disconnectButton}>
-              <Text style={styles.disconnectButtonText}>Disconnect Wallet</Text>
-            </TouchableOpacity>
-          </View>
+          </ScrollView>
         )}
-        <LatestTxs blockNo={(blockNumber).toString(16)} />
       </ScrollView>
     </SafeAreaView>
   )

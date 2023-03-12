@@ -1,6 +1,5 @@
 import React, {useContext, useEffect} from "react";
 import { Text, View, Dimensions, ScrollView, Alert } from "react-native";
-import FitChart from "./FitChart";
 import FitImage from "./FitImage";
 import { AuthContext } from "../context/AuthContext";
 import FitHealthStat from "./FitHealthStat";
@@ -8,6 +7,7 @@ import moment from 'moment';
 import { convertMsToHoursMinutes } from "../utils/DateOps";
 import axios from "axios";
 import { BASE_URL } from "../utils/config";
+import CustomLineChart from "./CustomLineChart";
 
 const { width } = Dimensions.get("screen");
 
@@ -114,18 +114,18 @@ useEffect(() => {
         />
       </View>
       <View>
-        <FitChart
+        <CustomLineChart
           title={"Sleep"}
           description={`${convertMsToHoursMinutes(weeklySleep[weeklySleep.length - 1] * (1000 * 60 * 60))} • Yesterday`}
           data={sleepData}
-          baseline={8}
           yAxisSuffix={"h"}
+          decimalPlaces={0}
         />
-        <FitChart
+        <CustomLineChart
           title={"Steps"}
           description={"Take 10,000 steps a day"}
           data={stepsData}
-          baseline={10000}
+          decimalPlaces={0}
         />
       </View>
     </ScrollView>
