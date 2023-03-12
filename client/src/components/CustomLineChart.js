@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Dimensions, Text } from "react-native";
-import { BarChart } from "react-native-chart-kit";
+import { LineChart } from "react-native-chart-kit";
 
-const FitChart = ({ data, title, description, baseline,yAxisSuffix }) => {  
+const CustomLineChart = ({ data, title, description,yAxisSuffix, decimalPlaces}) => {  
   return (
     <View style={{ flex: 1 }}>
       <View style={{ paddingLeft: 20 }}>
@@ -23,7 +23,7 @@ const FitChart = ({ data, title, description, baseline,yAxisSuffix }) => {
         )}
       </View>
       <View>
-        <BarChart
+        <LineChart
           style={{
             marginVertical: 8,
             borderRadius: 16,
@@ -47,15 +47,14 @@ const FitChart = ({ data, title, description, baseline,yAxisSuffix }) => {
               right: 0,
               paddingRight: 64,
             },
-            barPercentage: 0.5,
-            decimalPlaces: 0,
+            decimalPlaces: decimalPlaces,
           }}
-          showBarTops={false}
           fromZero
+          bezier
         />
       </View>
     </View>
   );
 };
 
-export default FitChart;
+export default CustomLineChart;
