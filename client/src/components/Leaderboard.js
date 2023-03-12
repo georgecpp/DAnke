@@ -69,7 +69,7 @@ export default class Leaderboard extends Component {
           </Text>
         </View>
         <Text style={[styles.score, this.props.scoreStyle]}>
-          {item[sortBy] || 0}
+          {item[sortBy] || 0} DAC
         </Text>
       </View>
     );
