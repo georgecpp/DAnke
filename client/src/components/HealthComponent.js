@@ -51,8 +51,13 @@ const HealthComponent = ({navigation}) => {
           let data = res[i].steps.reverse();
           if(data.length !== 0) {
             var stepsInLastWeek = [];
+            var currDate = data[0].date;
             data.map((element) => {
+              if(element.date != currDate && Date.parse(currDate) - Date.parse(element.date) !== 86400000) {
+                stepsInLastWeek.push(0);
+              }
               stepsInLastWeek.push(element.value);
+              currDate = element.date;
             })
             stepsInLastWeek.pop();
             stepsInLastWeek.reverse();
@@ -85,19 +90,24 @@ const HealthComponent = ({navigation}) => {
     .then((res) => {
       // Parse the sleep data and format it as DAY-SLEEP_DURATION
       var currStart = res[0].startDate;
-      const sleepData = res.map((sleep) => {
-        var duration = 0;
+      var currEnd = res[0].endDate;
+      const sleepData = res
+      .filter((sleep) => {
         if(Date.parse(currStart) - Date.parse(sleep.startDate) > 0) {
           currStart = sleep.startDate;
-          return duration.toFixed(2);
+          return false;
         }
+        if(Date.parse(currEnd) > Date.parse(sleep.startDate) > 0) {
+          currEnd = sleep.endDate;
+          return false;
+        }
+        currStart = sleep.startDate; currEnd = sleep.endDate;
+        return true;
+      })
+      .map((sleep) => {
         duration = (Date.parse(sleep.endDate) - Date.parse(sleep.startDate)) / (1000 * 60 * 60);
-        currStart = sleep.startDate;
         return duration.toFixed(2);
       })
-      .filter((sleepDuration) => {
-        return sleepDuration !== "0.00";
-      });
 
       if(sleepData.length>7) sleepData.shift();
       const padLen = 7 - sleepData.length;
