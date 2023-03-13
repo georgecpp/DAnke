@@ -111,10 +111,9 @@ router.get('/userRewards/:userId', async (req, res) => {
     if(!user) {
         return res.status(404).send('Cannot find user!');
     }
-    if(lastNdays < 0 || lastNdays > 7 || typeof(lastNdays) !== "number") {
+    if(lastNdays < 0 || lastNdays > 7) {
         lastNdays = 7;
     }
-
     const userRewards = await Reward.find({
         userId: userId,
         savedAtDate: {
