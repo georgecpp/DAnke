@@ -31,12 +31,13 @@ const RewardTracker = () => {
 
   const getUserRewards = async () => {
     const userRewardsResponse = await axios.get(
-      `http://3.69.101.106:2409/reward/userRewards/${userInfo.data.id}?lastNdays=7`
+      `http://3.69.101.106:2409/reward/userRewards/${userInfo.data.id}?lastNdays=6`
     );
     const lastWeekRewards = userRewardsResponse.data;
     var lastWeekRewardData = lastWeekRewards.map((reward) => {
       return reward.rewardDAC;
     });
+    lastWeekRewardData = lastWeekRewardData.reverse();
     if(lastWeekRewards.length === 0) {
       setUserRewards([0.00,0.00,0.00,0.00,0.00,0.00,0.00]);
       return;
