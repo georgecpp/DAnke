@@ -48,7 +48,7 @@ const LeaderboardScreen = ({navigation}) => {
     setCurrentUser({
       userName: _currentUser.name,
       userAvatarUrl: _currentUser.photo,
-      highScore: _currentUser.rewardToday
+      highScore: _currentUser.rewardToday.toFixed(2)
     });    
     const refreshAccessTokenResponse = await axios.post(`https://oauth2.googleapis.com/token?client_id=1069286417092-vtilvanv1eo8jg9ts16pcjl38dc5o9l4.apps.googleusercontent.com&client_secret=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&grant_type=refresh_token&refresh_token=${userInfo.data.googleRefreshToken}`, {});
     const refreshedAccessToken = refreshAccessTokenResponse.data.access_token;
@@ -81,13 +81,13 @@ const LeaderboardScreen = ({navigation}) => {
           return {
             userName: connection.names[0].displayName,
             userAvatarUrl: connection.photos[0].url,
-            highScore: rewardTodayForThatUser
+            highScore: rewardTodayForThatUser.toFixed(2)
           }
         });
         users.push({
           userName: _currentUser.name,
           userAvatarUrl: _currentUser.photo,
-          highScore: _currentUser.rewardToday
+          highScore: _currentUser.rewardToday.toFixed(2)
         });
         setLeaderboardData(users);
       }
@@ -154,7 +154,7 @@ const LeaderboardHeader = ({currentUser, userRank}) => {
               <Image style={{ flex: 1, paddingVertical:30,  height: 60, width: 60, borderRadius: 60 / 2 }}
                   source={{ uri: currentUser.userAvatarUrl}} />
             </TouchableOpacity>
-            <Text style={{ color: 'white', fontSize: 25, flex: 1, marginLeft: 40 }}>
+            <Text style={{ color: 'white', fontSize: 24, flex: 1, marginLeft: 40 }}>
                 {currentUser.highScore} DAC
             </Text>
          </>
