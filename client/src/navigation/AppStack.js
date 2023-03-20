@@ -4,12 +4,12 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawer from '../components/CustomDrawer';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import SettingsScreen from '../screens/SettingsScreen';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import TabNavigator from './TabNavigator';
 import WalletScreen from '../screens/WalletScreen';
 import LeaderboardScreen from '../screens/LeaderboardScreen';
+import ReactsScreen from '../screens/ReactsScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -56,11 +56,11 @@ const AppStack = () => {
         }}
       />
       <Drawer.Screen
-        name="Settings"
-        component={SettingsScreen}
+        name="Reacts"
+        component={ReactsScreen}
         options={{
           drawerIcon: ({color}) => (
-            <Ionicons name="settings-outline" size={22} color={color} />
+            <AntDesign name="like2" size={22} color={color} />
           ),
         }}
       />

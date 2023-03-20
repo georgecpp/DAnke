@@ -11,7 +11,7 @@ import {
 import { AuthContext } from '../context/AuthContext';
 
 
-const SettingsScreen = ({navigation}) => {
+const ReactsScreen = ({navigation}) => {
 
   const {userInfo} = useContext(AuthContext);
 
@@ -34,11 +34,11 @@ const SettingsScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-          <Text>Settings Screen</Text>
+          <Text>Reacts Screen</Text>
         </View>
       </ScrollView>
   </SafeAreaView>
   )
 }
 
-export default SettingsScreen;
+export default ReactsScreen;
