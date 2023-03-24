@@ -7,13 +7,16 @@ import {
   Alert,
   Image,
   Text,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal,
+  StyleSheet
 } from 'react-native';
 
 import { AuthContext } from '../context/AuthContext';
 import Leaderboard from '../components/Leaderboard';
 import { openDrawer } from "../utils/NavigationService";
 import axios from "axios";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const LeaderboardScreen = ({navigation}) => {
 
@@ -21,6 +24,7 @@ const LeaderboardScreen = ({navigation}) => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [userRank, setUserRank] = useState(1);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const alert = (title, body) => {
     Alert.alert(
@@ -118,7 +122,8 @@ const LeaderboardScreen = ({navigation}) => {
         sortBy='highScore'
         icon='userAvatarUrl' 
         labelBy='userName'
-        onRowPress = {(item, index) => {alert(item.userName + " clicked", item.highScore + " points, wow!") }}    
+        // onRowPress = {(item, index) => {alert(item.userName + " clicked", item.highScore + " points, wow!") }}    
+        onRowPress={(item, index) => setSelectedUser(item)}
         oddRowColor="#7289DA"
         evenRowColor="#1f2026"
         labelStyle={{color: 'white'}}
@@ -132,9 +137,86 @@ const LeaderboardScreen = ({navigation}) => {
         <ActivityIndicator size={'large'} />
       </View>
     }
+    {selectedUser && (
+        <Modal
+        visible={selectedUser !== null}
+          animationType="slide"
+          transparent={true}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity
+                onPress={() => alert('Like', `You liked ${selectedUser.userName}!`)}
+                style={styles.modalButton}
+              >
+                <Icon name="thumbs-up" size={25} color="#3b5998" />
+                <Text style={styles.modalButtonText}>Like</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => alert('Congrats', `You congratulated ${selectedUser.userName}!`)}
+                style={styles.modalButton}
+              >
+                <Icon name="trophy" size={25} color="#ffcc00" />
+                <Text style={styles.modalButtonText}>Congrats</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => alert('Roast', `You roasted ${selectedUser.userName}!`)}
+                style={styles.modalButton}
+              >
+                <Icon name="fire" size={25} color="#ff5733" />
+                <Text style={styles.modalButtonText}>Roast</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setSelectedUser(null)} style={styles.modalCancelButton}>
+                <Icon name="times" size={25} color="#dcdcdc" />
+                <Text style={styles.modalCancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
-  )
+  )  
 }
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    width: '80%',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  modalButtonText: {
+    marginLeft: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalCancelButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+  },
+  modalCancelButtonText: {
+    marginLeft: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#dcdcdc',
+  },
+});
+
 
 const LeaderboardHeader = ({currentUser, userRank}) => {
   return (
