@@ -52,7 +52,7 @@ router.post('/rewardUser', async (req, res) => {
             await rewardTodayForUser.save();
         }
 
-        sendNotification(fcmRegistrationTokens, 'DAnke daily reward','Killing it as always! Here\'s your reward!');
+        sendNotification(fcmRegistrationTokens, 'DAnke daily reward','Killing it as always! Here\'s your reward!', 'https://download.logo.wine/logo/Ethereum/Ethereum-Icon-Purple-Logo.wine.png');
         return res.status(200).send('Reward sent successfully!');
     }
     catch(err) {

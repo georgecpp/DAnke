@@ -44,6 +44,31 @@ const LeaderboardScreen = ({navigation}) => {
     return sorted;
   }
 
+  const sendReact = async (userFrom, userTo, reactType) => {
+    console.log(userFrom, userTo, reactType);
+    try {
+      const sendReactResponse = await axios.post(`http://3.69.101.106:2409/reacts/sendReact`, {
+        userFrom: userFrom,
+        userTo: userTo,
+        reactType: reactType
+      });
+      if(sendReactResponse.status === 200) {
+        if(reactType === 'like') {
+          alert('Like', `You liked ${selectedUser.userName}!`)
+        }
+        else if(reactType === 'congrats') {
+          alert('Congrats', `You congratulated ${selectedUser.userName}!`)
+        }
+        else {
+          alert('Roast', `You roasted ${selectedUser.userName}!`)
+        }
+      }
+    }
+    catch(err) {
+      Alert.alert(err);
+    }
+  };
+
   const getLeaderboardData = async () => {
     
     const todayRewardsResponse = await axios.get(`http://3.69.101.106:2409/reward/todayRewards`);
@@ -77,21 +102,25 @@ const LeaderboardScreen = ({navigation}) => {
           })
         .map((connection) => {
           var rewardTodayForThatUser = 0;
+          var thatUserId = "";
             for(i=0;i<usersRewards.length;i++) {
               if(usersRewards[i].phoneNumber === connection.phoneNumbers[0].canonicalForm) {
                 rewardTodayForThatUser = usersRewards[i].rewardToday;
+                thatUserId = usersRewards[i].id;
               }
             }
           return {
+            userId: thatUserId,
             userName: connection.names[0].displayName,
             userAvatarUrl: connection.photos[0].url,
-            highScore: rewardTodayForThatUser.toFixed(0)
+            highScore: rewardTodayForThatUser.toFixed(0),
           }
         });
         users.push({
+          userId: _currentUser.id,
           userName: _currentUser.name,
           userAvatarUrl: _currentUser.photo,
-          highScore: _currentUser.rewardToday.toFixed(0)
+          highScore: _currentUser.rewardToday.toFixed(0),
         });
         setLeaderboardData(users);
       }
@@ -146,21 +175,27 @@ const LeaderboardScreen = ({navigation}) => {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <TouchableOpacity
-                onPress={() => alert('Like', `You liked ${selectedUser.userName}!`)}
+                onPress={() => {
+                  sendReact(userInfo.data.id, selectedUser.userId, 'like')                  
+                }}
                 style={styles.modalButton}
               >
                 <Icon name="thumbs-up" size={25} color="#3b5998" />
                 <Text style={styles.modalButtonText}>Like</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => alert('Congrats', `You congratulated ${selectedUser.userName}!`)}
+                onPress={() => {
+                  sendReact(userInfo.data.id, selectedUser.userId, 'congrats')
+                }}
                 style={styles.modalButton}
               >
                 <Icon name="trophy" size={25} color="#ffcc00" />
                 <Text style={styles.modalButtonText}>Congrats</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => alert('Roast', `You roasted ${selectedUser.userName}!`)}
+                onPress={() => {
+                  sendReact(userInfo.data.id, selectedUser.userId, 'roast')
+                }}
                 style={styles.modalButton}
               >
                 <Icon name="fire" size={25} color="#ff5733" />
@@ -207,7 +242,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 10,
+    paddingTop: 10
   },
   modalCancelButtonText: {
     marginLeft: 10,
