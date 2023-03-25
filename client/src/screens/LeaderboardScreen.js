@@ -45,7 +45,6 @@ const LeaderboardScreen = ({navigation}) => {
   }
 
   const sendReact = async (userFrom, userTo, reactType) => {
-    console.log(userFrom, userTo, reactType);
     try {
       const sendReactResponse = await axios.post(`http://3.69.101.106:2409/reacts/sendReact`, {
         userFrom: userFrom,

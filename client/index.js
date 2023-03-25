@@ -22,7 +22,7 @@ async function onMessageReceived(message) {
       channelId: channelId,
     //   smallIcon: 'ic_stat_connexio_icon',
       color: '#7289da',
-      largeIcon: 'https://www.navy.ro/images/SiglaSMFN.jpg',
+      largeIcon: message.notification.android.imageUrl,
       pressAction: {
         id: 'default',
       },

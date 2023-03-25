@@ -53,15 +53,15 @@ router.get('/userReacts/:userId', async (req, res) => {
     if(lastNdays < 0 || lastNdays > 7) {
         lastNdays = 7;
     }
-    const userRewards = await Reward.find({
-        userId: userId,
+    const userReacts = await React.find({
+        userTo: userId,
         savedAtDate: {
             $gte: new Date((new Date().getTime() - (lastNdays * 24 * 60 * 60 * 1000)))
         }
     })
     .sort({savedAtDate: -1});
 
-    return res.status(200).send(userRewards);
+    return res.status(200).send(userReacts);
 });
 
 module.exports = router;
