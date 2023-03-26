@@ -6,7 +6,7 @@ admin.initializeApp({
 });
 dotenv.config();
 
-module.exports = function(fcmRegistrationTokens, title, body) {
+module.exports = function(fcmRegistrationTokens, title, body, imageUrl) {
 
     const data = {
       message: {
@@ -17,7 +17,7 @@ module.exports = function(fcmRegistrationTokens, title, body) {
         android: {
           notification: {
             color: '#2D5987',
-            imageUrl: 'https://www.navy.ro/images/SiglaSMFN.jpg'
+            imageUrl: imageUrl
           }
         },
         apns: {
@@ -27,12 +27,12 @@ module.exports = function(fcmRegistrationTokens, title, body) {
             }
           },
           fcm_options: {
-            image: 'https://www.navy.ro/images/SiglaSMFN.jpg'
+            image: imageUrl
           }
         },
         webpush: {
           headers: {
-            image: 'https://www.navy.ro/images/SiglaSMFN.jpg'
+            image: imageUrl
           }
         },
         tokens: fcmRegistrationTokens

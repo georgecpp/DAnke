@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     paddingRight: 80
   },
   score: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: "bold",
     position: "absolute",
     right: 15,

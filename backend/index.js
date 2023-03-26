@@ -11,6 +11,7 @@ const homeRoute = require('./routes/home');
 const authRoute = require('./routes/auth');
 const rewardRoute = require('./routes/reward');
 const vitalsRoute = require('./routes/vitals');
+const reactsRoute = require('./routes/reacts');
 
 // Connect to DB  -- implement.
 mongoose.connect(process.env.DB_CONNECTION, () => {
@@ -27,6 +28,7 @@ app.use('/', homeRoute);
 app.use('/auth', authRoute);
 app.use('/reward', rewardRoute);
 app.use('/vitals', vitalsRoute);
+app.use('/reacts', reactsRoute);
 
 app.listen(process.env.PORT || 8080, () => {
     console.log('Server Up and running!');
