@@ -34,6 +34,7 @@ const RewardTracker = () => {
       `http://3.69.101.106:2409/reward/userRewards/${userInfo.data.id}?lastNdays=6`
     );
     const lastWeekRewards = userRewardsResponse.data;
+    console.log(lastWeekRewards);
     var lastWeekRewardData = lastWeekRewards.map((reward) => {
       return reward.rewardDAC;
     });
@@ -69,7 +70,7 @@ const RewardTracker = () => {
           title={"Rewards"}
           description={"DAC reward tracking"}
           data={rewardData}
-          decimalPlaces={2}
+          decimalPlaces={1}
         /> :
         <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
           <ActivityIndicator size={'large'} />
