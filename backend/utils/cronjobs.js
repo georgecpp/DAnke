@@ -1,6 +1,7 @@
 const sendNotification = require('../firebase/sendNotification');
 const User = require('../model/User');
 const Vitals = require('../model/Vitals');
+const calculateReward = require('./calculateReward');
 
 const morningGreet = async () => {
     try {
@@ -53,7 +54,7 @@ const rewardUsers = async () => {
             var fcmRegistrationTokens = [user.fcmRegistrationToken];
             var vitalsTodayForUser = await Vitals.findOne({userId: user._id, savedAtDate: {$lt: endToday, $gte: startToday}});
             if(vitalsTodayForUser) {
-                sendNotification(fcmRegistrationTokens, 'DAnke daily reward',`What a day, ${user.name.split(' ')[0]}! Your reward for today: 21 DAC ⚡`, 'https://download.logo.wine/logo/Ethereum/Ethereum-Icon-Purple-Logo.wine.png');
+                calculateReward(user,vitalsTodayForUser.heartRateAvg, vitalsTodayForUser.steps, vitalsTodayForUser.sleep);
             }
             else {
                 sendNotification(fcmRegistrationTokens, 'DAnke daily reward','You didn\'t open DAnke today, come back tomorrow!', 'https://i.kym-cdn.com/entries/icons/original/000/027/880/jake.jpg');

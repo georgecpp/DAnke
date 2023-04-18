@@ -8,13 +8,13 @@ const cors = require('cors');
 const path = require('path');
 
 // handle cron jobs for daily notifications system
-cron.schedule("0 49 21 * * *", function () {
+cron.schedule("0 0 9 * * *", function () {
     morningGreet();
 });
-cron.schedule("0 53 21 * * *", function () {
+cron.schedule("0 0 16 * * *", function () {
     afternoonRemind();
 });
-cron.schedule("0 12 23 * * *", function () {
+cron.schedule("0 0 20 * * *", function () {
     rewardUsers();
 });
 
