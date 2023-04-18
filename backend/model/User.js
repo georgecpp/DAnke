@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: null
     },
+    walletAddress: {
+        type: String,
+        required:false,
+        default: null
+    },
     createdAt: {
         type: Date,
         default: Date.now

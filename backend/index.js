@@ -1,3 +1,5 @@
+const cron = require('node-cron');
+const { morningGreet, afternoonRemind, rewardUsers } = require('./utils/cronjobs');
 const express = require('express');
 const app = express();
 require('dotenv').config();
@@ -5,6 +7,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 
+// handle cron jobs for daily notifications system
+cron.schedule("0 49 21 * * *", function () {
+    morningGreet();
+});
+cron.schedule("0 53 21 * * *", function () {
+    afternoonRemind();
+});
+cron.schedule("0 12 23 * * *", function () {
+    rewardUsers();
+});
 
 // Import routes
 const homeRoute = require('./routes/home');

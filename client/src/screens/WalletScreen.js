@@ -22,6 +22,8 @@ import MetamaskSVG from '../assets/images/misc/metamask-fox.svg';
 import LatestTxs from '../components/LatestTxs';
 import SocialMediaButton from '../components/SocialMediaButton';
 import RewardTracker from '../components/RewardTracker';
+import axios from "axios";
+import { BASE_URL } from "../utils/config";
 
 
 const ANIMATION_DURATION = 5000;
@@ -60,11 +62,28 @@ const WalletScreen = ({navigation}) => {
     const balance = ethers.utils.formatEther(balanceBigNumber)
     setBalanceDAC(balance);
   }
+
+  const walletauth = async (walletAddress) => {
+    axios.post(`${BASE_URL}/auth/wallet-auth`, {
+        email: userInfo.data.email,
+        walletAddress: walletAddress
+    })
+    .then(res => {
+      if(res.status !== 200) {
+        Alert.alert('wallet address not sent correctly: ' + res.statusText);
+      }
+    })
+    .catch(e => {
+        Alert.alert(`wallet address send error: ${e}`);
+    });
+  }
+
   const authenticateUser = async () => {
     if (connector.connected) {
       console.log(connector.session);
     }else{
       const session = await connector.connect();
+      walletauth(session.accounts[0]);
     }
   }
 
