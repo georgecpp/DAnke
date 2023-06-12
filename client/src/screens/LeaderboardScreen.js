@@ -17,6 +17,7 @@ import Leaderboard from '../components/Leaderboard';
 import { openDrawer } from "../utils/NavigationService";
 import axios from "axios";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { BASE_URL } from '../utils/config';
 
 const LeaderboardScreen = ({navigation}) => {
 
@@ -46,7 +47,7 @@ const LeaderboardScreen = ({navigation}) => {
 
   const sendReact = async (userFrom, userTo, reactType) => {
     try {
-      const sendReactResponse = await axios.post(`http://3.69.101.106:2409/reacts/sendReact`, {
+      const sendReactResponse = await axios.post(`${BASE_URL}/reacts/sendReact`, {
         userFrom: userFrom,
         userTo: userTo,
         reactType: reactType
@@ -70,7 +71,7 @@ const LeaderboardScreen = ({navigation}) => {
 
   const getLeaderboardData = async () => {
     
-    const todayRewardsResponse = await axios.get(`http://3.69.101.106:2409/reward/todayRewards`);
+    const todayRewardsResponse = await axios.get(`${BASE_URL}/reward/todayRewards`);
     const usersRewards = todayRewardsResponse.data;
     const _currentUser = usersRewards.find(user => user.phoneNumber === userInfo.data.phoneNumber);
     setCurrentUser({
@@ -132,7 +133,7 @@ const LeaderboardScreen = ({navigation}) => {
       }
     })
     .catch(function (error) {
-      Alert.alert(error);
+      Alert.alert("Error", error.message);
     });
   }
 

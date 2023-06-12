@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
 import { Text, View, Dimensions, ScrollView, Alert, ActivityIndicator} from "react-native";
-import { BASE_URL } from "../utils/config";
 import CustomLineChart from "./CustomLineChart";
 import { AuthContext } from "../context/AuthContext";
 import moment from 'moment';
 import axios from "axios";
 const { width } = Dimensions.get("screen");
+import { BASE_URL } from "../utils/config";
 
 const RewardTracker = () => {
 
@@ -31,7 +31,7 @@ const RewardTracker = () => {
 
   const getUserRewards = async () => {
     const userRewardsResponse = await axios.get(
-      `http://3.69.101.106:2409/reward/userRewards/${userInfo.data.id}?lastNdays=6`
+      `${BASE_URL}/reward/userRewards/${userInfo.data.id}?lastNdays=6`
     );
     const lastWeekRewards = userRewardsResponse.data;
     console.log(lastWeekRewards);

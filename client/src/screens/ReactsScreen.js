@@ -11,6 +11,7 @@ import {
 import ReactDisplay from '../components/ReactDisplay';
 import { AuthContext } from '../context/AuthContext';
 import axios from "axios";
+import { BASE_URL } from '../utils/config';
 
 const ReactsScreen = ({navigation}) => {
 
@@ -19,7 +20,7 @@ const ReactsScreen = ({navigation}) => {
 
   const getUserReacts = async () => {
     const userReactsResponse = await axios.get(
-      `http://3.69.101.106:2409/reacts/userReacts/${userInfo.data.id}?lastNdays=7`
+      `${BASE_URL}/reacts/userReacts/${userInfo.data.id}?lastNdays=7`
     );
     const lastWeekReacts = userReactsResponse.data;
     if(lastWeekReacts.length === 0) {
