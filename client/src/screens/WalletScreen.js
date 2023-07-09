@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,10 @@ import {
   Easing,
 } from 'react-native';
 
-import WalletConnectProvider, { useWalletConnect } from '@walletconnect/react-native-dapp';
+import {
+  WalletConnectModal,
+  useWalletConnectModal,
+} from '@walletconnect/modal-react-native';
 import { AuthContext } from '../context/AuthContext';
 
 import "@ethersproject/shims"
@@ -27,6 +30,15 @@ import { BASE_URL } from "../utils/config";
 
 
 const ANIMATION_DURATION = 5000;
+const PROJECT_ID = 'c2a1ea1206debebd67e06e8da39a8b26';
+
+const clientMeta = {
+  name: 'React Native V2 dApp',
+  description: 'RN dApp by WalletConnect',
+  url: 'https://walletconnect.com/', 
+  icons: ['https://avatars.githubusercontent.com/u/37784886'], 
+  redirect: { native: 'w3msample://', }
+};
 
 const WalletScreen = ({navigation}) => {
 
@@ -53,7 +65,14 @@ const WalletScreen = ({navigation}) => {
   };
 
   const {userInfo} = useContext(AuthContext);
-  const connector = useWalletConnect(); // Wallet connect hook
+
+  const { isOpen, open, close, provider, isConnected, address } = useWalletConnectModal();
+  const peerMeta = useMemo(() => {
+    if (isConnected) {
+      return provider?.session?.peer.metadata;
+    }
+  }, [isConnected, provider]);
+
   const [balanceDAC, setBalanceDAC] = useState(0.0);
   const fetchBalanceDAC = async (addressFrom) => {
     const provider = new ethers.providers.AlchemyProvider('goerli', 'vlYolnH8xOcJ_nq6M0Edtj_KmkEGZTnw')
@@ -78,19 +97,12 @@ const WalletScreen = ({navigation}) => {
     });
   }
 
-  const authenticateUser = async () => {
-    if (connector.connected) {
-      console.log(connector.session);
-    }else{
-      const session = await connector.connect();
-      walletauth(session.accounts[0]);
-    }
-  }
-
   useEffect(() => {
-    if(connector && connector.connected) 
-      fetchBalanceDAC(connector.accounts[0]);
-  }, [connector]); // Only re-run the effect if count changes
+    if(isConnected) {
+      fetchBalanceDAC(address);
+      walletauth(address);
+    }
+  }, [isConnected]); // Only re-run the effect if count changes
 
   useEffect(() => {
     startAnimation();
@@ -134,7 +146,7 @@ const WalletScreen = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        {!connector.connected ? (
+        {!isConnected ? (
           <View style={styles.connectWallet}>
             <View
               style={{
@@ -146,15 +158,12 @@ const WalletScreen = ({navigation}) => {
                     buttonTitle="Connect to wallet"
                     btnType="google"
                     color="white"
-                    // backgroundColors={["#fff", "#7289DA", "#7289DA"]}
                     backgroundColors={["#fff", "#3999fc", "#3999fc", "#3999fc"]}
-                    // backgroundColors={["#fff","#f8b26a", "#f47e60", "#e15b64"]}
-                    // backgroundColors={["#93dbe9", "#689cc5", "#5e6fa3", "#3b4368"]}
                     source={require('../assets/images/walletconnect.png')}
                     marginLeftIcon={5}
                     onPress={() => {
                       stopAnimation();
-                      authenticateUser();
+                      open();
                     }} 
               />
             </View>
@@ -181,11 +190,11 @@ const WalletScreen = ({navigation}) => {
             <View style={styles.connectedWallet}>
               <View style={styles.accountInfo}>
                 <Text style={styles.accountLabel}>Connected account:</Text>
-                <Text style={styles.accountValue}>{connector.session.accounts[0].slice(0,10)}</Text>
+                <Text style={styles.accountValue}>{address.slice(0,10)}</Text>
               </View>
               <View style={styles.walletInfo}>
                 <Text style={styles.walletLabel}>Wallet provider:</Text>
-                <Text style={styles.walletValue}>{connector.session.peerMeta.name}</Text>
+                <Text style={styles.walletValue}>{peerMeta?.name.split(' ')[0]}</Text>
               </View>
               <View style={styles.balanceInfo}>
                 <Text style={styles.balanceLabel}>DAC balance:</Text>
@@ -195,7 +204,7 @@ const WalletScreen = ({navigation}) => {
               height={200}
               width={200}
               />
-              <TouchableOpacity onPress={() => {connector.killSession(); startAnimation()}} style={styles.disconnectButton}>
+              <TouchableOpacity onPress={() => {provider?.disconnect(); startAnimation()}} style={styles.disconnectButton}>
                 <Text style={styles.disconnectButtonText}>Disconnect Wallet</Text>
               </TouchableOpacity>
               <RewardTracker />
@@ -203,6 +212,10 @@ const WalletScreen = ({navigation}) => {
           </ScrollView>
         )}
       </ScrollView>
+      <WalletConnectModal
+        projectId={PROJECT_ID}
+        providerMetadata={clientMeta}
+      />
     </SafeAreaView>
   )
 }
