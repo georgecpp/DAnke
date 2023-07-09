@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Animated,
   Easing,
+  Platform
 } from 'react-native';
 
 import {
@@ -18,10 +19,13 @@ import {
 } from '@walletconnect/modal-react-native';
 import { AuthContext } from '../context/AuthContext';
 
+// web3
 import "@ethersproject/shims"
 import { ethers } from "ethers";
 import { contract_address, contractABI } from '../web3/constants';
+
 import MetamaskSVG from '../assets/images/misc/metamask-fox.svg';
+import TrustWalletSVG from '../assets/images/misc/trustwallet.svg';
 import LatestTxs from '../components/LatestTxs';
 import SocialMediaButton from '../components/SocialMediaButton';
 import RewardTracker from '../components/RewardTracker';
@@ -33,14 +37,20 @@ const ANIMATION_DURATION = 5000;
 const PROJECT_ID = 'c2a1ea1206debebd67e06e8da39a8b26';
 
 const clientMeta = {
-  name: 'React Native V2 dApp',
-  description: 'RN dApp by WalletConnect',
+  name: 'DAnke App',
+  description: 'DAnke - Being thankful 🤝 in a decentralized way. ₿',
   url: 'https://walletconnect.com/', 
   icons: ['https://avatars.githubusercontent.com/u/37784886'], 
   redirect: { native: 'w3msample://', }
 };
 
 const WalletScreen = ({navigation}) => {
+
+  if (Platform.OS === 'android') {
+    const disableStupidDebugWalletConnectLogs = () => {};
+    console.error = disableStupidDebugWalletConnectLogs;
+    console.info = disableStupidDebugWalletConnectLogs;
+  }
 
   // var blockNumber = 8567394;
   const originBlockNumber = 8567394;
@@ -200,11 +210,18 @@ const WalletScreen = ({navigation}) => {
                 <Text style={styles.balanceLabel}>DAC balance:</Text>
                 <Text style={styles.balanceValue}>{balanceDAC}⚡</Text>
               </View>
-              <MetamaskSVG
-              height={200}
-              width={200}
-              />
-              <TouchableOpacity onPress={() => {provider?.disconnect(); startAnimation()}} style={styles.disconnectButton}>
+              {peerMeta?.name.split(' ')[0] === 'MetaMask' ? 
+                <MetamaskSVG
+                height={200}
+                width={200}
+                />
+                :
+                <TrustWalletSVG
+                height={200}
+                width={200}
+                />
+              }
+              <TouchableOpacity onPress={() => {if(isConnected) provider?.disconnect();  startAnimation()}} style={styles.disconnectButton}>
                 <Text style={styles.disconnectButtonText}>Disconnect Wallet</Text>
               </TouchableOpacity>
               <RewardTracker />

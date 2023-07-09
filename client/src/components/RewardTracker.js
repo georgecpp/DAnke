@@ -31,7 +31,7 @@ const RewardTracker = () => {
 
   const getUserRewards = async () => {
     const userRewardsResponse = await axios.get(
-      `${BASE_URL}/reward/userRewards/${userInfo.data.id}?lastNdays=6`
+      `${BASE_URL}/reward/userRewards/${userInfo.data.id}?lastNdays=7`
     );
     const lastWeekRewards = userRewardsResponse.data;
     console.log(lastWeekRewards);
